@@ -1,0 +1,78 @@
+get:
+  summary: Richiesta prodotto
+  description: Ritorna le informazioni di un singolo prodotto richiesto tramite ID in path param
+  operationId: getPDP
+  tags:
+    - products
+  parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+  responses:
+    200:
+      description: "prodotto trovato"
+      content:
+        application/json:
+          schema:
+            $ref: "schema.json#/responseProduct"
+          example:
+            {
+              status: "success",
+              data:
+                {
+                  id: "XYZ123",
+                  name: "casetta",
+                  description: "Casetta in legno massello adattata a tutte le temperature",
+                  primaryPhoto: /image.jpg,
+                  secondaryPhotos:
+                    [
+                      "/image.jpg",
+                    ],
+                  category: "casetta",
+                  price: 9.99,
+                  tax: 22,
+                  show: true,
+                  showHome: false,
+                  stock: 123,
+                },
+            }
+    400:
+      description: "prodotto non trovato"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "error", message: "articolo non presente" }
+
+delete:
+  summary: Rimozione prodotto
+  description: Rimuove il prodotto identificato dall'ID passato tramite path param
+  tags:
+    - products
+  operationId: removeProduct
+  parameters:
+    - in: header
+      name: Authorization
+      description: token JWT
+      schema:
+        type: string
+      required: true
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+    - in: query
+      name: override
+      schema:
+        type: boolean
+  responses:
+    200:
+      description: "Prodotto Rimosso"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "success", message: "Prodotto rimosso" }

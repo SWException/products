@@ -1,0 +1,150 @@
+get:
+  summary: Richiesta lista prodotti
+  description: Ritorna l'elenco di tutti i prodotti disponibili
+  tags:
+    - products
+  operationId: getProducts
+  parameters:
+    - in: query
+      name: minPrice
+      schema:
+        type: integer
+        format: int64
+    - in: query
+      name: maxPrice
+      schema:
+        type: integer
+        format: int64
+    - in: query
+      name: category
+      schema:
+        type: string
+    - in: query
+      name: sorting
+      schema:
+        type: string
+        enum: ["asc", "desc"]
+  responses:
+    200:
+      description: "elenco di tutti i prodotti"
+      content:
+        application/json:
+          schema:
+            $ref: "schema.json#/responseProducts"
+          example:
+            {
+              status: "success",
+              data:
+                [
+                  {
+                    id: "123VF",
+                    name: "gioco",
+                    description: "descrizione del prodotto",
+                    primaryPhoto: /image.jpg,
+                    secondaryPhotos:
+                      [
+                        "/image.jpg",
+                      ],
+                    category: "games",
+                    price: 5.99,
+                    tax: 22,
+                    show: true,
+                    showHome: false,
+                    stock: 123,
+                  },
+                  {
+                    id: "321VF",
+                    name: "gioco2",
+                    description: "descrizione del prodotto",
+                    primaryPhoto: /image.jpg,
+                    secondaryPhotos:
+                      [
+                        "/image.jpg",
+                        "/image.jpg",
+                      ],
+                    category: "games",
+                    price: 7.99,
+                    tax: 10,
+                    show: true,
+                    showHome: true,
+                    stock: 0,
+                  },
+                ],
+            }
+
+post:
+  summary: Inserimento prodotto
+  description: Inserisce il prodotto nel DB
+  tags:
+    - products
+  parameters:
+    - in: header
+      name: Authorization
+      description: token JWT
+      schema:
+        type: string
+      required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "schema.json#/insertProduct"
+        example:
+          {
+            name: "scarpe",
+            description: "queste sono delle bellissime scarpe",
+            price: 50.00,
+            tax: 22,
+            stock: 5,
+          }
+  responses:
+    200:
+      description: "Prodotto inserito"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "success", message: "prodotto inserito" }
+    400:
+      description: "Prodotto non inserito"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "error", message: "prodotto non inserito" }
+
+patch:
+  summary: Modifica prodotto
+  description: Modifica il prodotto nel DB
+  tags:
+    - products
+  parameters:
+    - in: header
+      name: Authorization
+      description: token JWT
+      schema:
+        type: string
+      required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "schema.json#/editProduct"
+        example: { id: "123VF", price: 8.00 }
+  responses:
+    200:
+      description: "Modifica riuscita"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "success", message: "modifica riuscita" }
+    400:
+      description: "Modifica non riuscita"
+      content:
+        application/json:
+          schema:
+            $ref: "../utils/schema.json#/response"
+          example: { status: "error", message: "modifica non riuscita" }
