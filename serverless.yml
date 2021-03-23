@@ -19,7 +19,7 @@ custom:
   serverless-offline:
     httpPort: 4000
     ignoreJWTSignature: true
-  imageUploadBucket: imagebucket-dev
+  imageUploadBucket: imagebucket-products-dev
 
 
 provider:
@@ -31,9 +31,8 @@ provider:
   stage: ${opt:stage, 'dev'}
 
   apiGateway:
-    minimumCompressionSize: 1024
-    shouldStartNameWithService: true
     restApiId: 95kq9eggu9
+    restApiRootResourceId: zsd84g8moe
 
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
@@ -50,6 +49,14 @@ provider:
             - dynamodb:*
             - s3:*
           Resource: "*"
+functions:
+  updateProduct:
+    handler: "src/updateProduct.HANDLER"
+    events:
+      - http:
+          path: /products
+          method: PATCH
+          cors: true
 
 resources:
   Resources:
@@ -57,7 +64,7 @@ resources:
     BucketImage:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: imagebucket-${opt:stage, self:provider.stage}
+        BucketName: imagebucket-products-dev
         AccessControl: PublicRead #!!!public!!!
     ProductsTable:
       Type: AWS::DynamoDB::Table
@@ -92,3 +99,4 @@ resources:
           Projection:
             ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
+

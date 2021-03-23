@@ -1,10 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import fetch from 'node-fetch';
 import Product from 'src/Product';
 import API_RESPONSES from "src/utils/apiResponses"
 import { getTokenFromEvent, getBodyDataFromEvent } from "src/utils/checkJWT";
 import {S3 as s3} from "src/utils/s3"
 
-export const HANDLER: APIGatewayProxyHandler = async (event) => {
+export const HANDLER: APIGatewayProxyHandler = async (event) => { 
     //console.log("event", event);
 
     const TOKEN = getTokenFromEvent(event);
@@ -13,8 +14,11 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     }
 
     // chiamata a microservizio users
-    fetch('/jwt/'+TOKEN);
-
+    let ciao;
+     await fetch('https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/jwt/'+TOKEN).then(data=>ciao=data);
+     return ciao;
+    
+}
     /*else {
         const USER: User = await User.createUser(TOKEN);
         if (!(USER && USER.isAuthenticate() && USER.isAdmin())) {
@@ -29,7 +33,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, "error", "id prodotto non presente");
     }
     */
-
+/*
     const DATA = getBodyDataFromEvent(event);
     //image replacing, if needed
     if (DATA['image']) {
@@ -44,3 +48,5 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
 
     return API_RESPONSES._200(JSON.parse(JSON.stringify(RES)));
 }
+
+*/
