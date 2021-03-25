@@ -16,7 +16,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "schema.json#/responseProduct"
+            $ref: "../schemas/products.json#/responseProduct"
           example:
             {
               status: "success",
@@ -43,9 +43,49 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../utils/schema.json#/response"
+            $ref: "../schemas/response.json#/response"
           example: { status: "error", message: "articolo non presente" }
 
+patch:
+  summary: Modifica prodotto
+  description: Modifica il prodotto nel DB
+  tags:
+    - products
+  parameters:
+    - in: header
+      name: Authorization
+      description: token JWT
+      schema:
+        type: string
+      required: true
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/products.json#/editProduct"
+        example: { id: "123VF", price: 8.00 }
+  responses:
+    200:
+      description: "Modifica riuscita"
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/response.json#/response"
+          example: { status: "success", message: "modifica riuscita" }
+    400:
+      description: "Modifica non riuscita"
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/response.json#/response"
+          example: { status: "error", message: "modifica non riuscita" }
+          
 delete:
   summary: Rimozione prodotto
   description: Rimuove il prodotto identificato dall'ID passato tramite path param
@@ -74,5 +114,12 @@ delete:
       content:
         application/json:
           schema:
-            $ref: "../utils/schema.json#/response"
+            $ref: "../schemas/response.json#/response"
           example: { status: "success", message: "Prodotto rimosso" }
+    400:
+      description: "Prodotto non rimosso per qualche errore"
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/response.json#/response"
+          example: { status: "error", message: "si è verificato un errore" }

@@ -1,5 +1,5 @@
 {
-    "$id": "src/products/schema.json",
+    "$id": "schemas/products.json",
     "product": {
         "type": "object",
         "properties": {
@@ -15,7 +15,7 @@
             },
             "category": { "type": "string", "minLength": 1},
             "price": { "type": "number", "format": "float", "minimum": 0 },
-            "tax": { "type": "number", "format": "float", "minimum": 0 },
+            "tax": { "type": "string" },
             "show": { "type": "boolean" },
             "showHome": { "type": "boolean" },
             "stock": { "type": "integer", "format": "int64", "minimum": 0 }
@@ -44,7 +44,7 @@
     },
     "responseProduct": {
         "allOf" : [
-            { "$ref": "../utils/schema.json#/response" },
+            { "$ref": "response.json#/response" },
             {
                 "properties": {
                     "data": { "$ref": "#/product" }
@@ -54,7 +54,7 @@
     },
     "responseProducts": {
         "allOf" : [
-            { "$ref": "../utils/schema.json#/response" },
+            { "$ref": "response.json#/response" },
             {
                 "properties": {
                     "data": { "$ref": "#/products" }

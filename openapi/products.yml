@@ -24,13 +24,20 @@ get:
       schema:
         type: string
         enum: ["asc", "desc"]
+    - in: query
+      name: id-list
+      description: "Array degli id dei prodotti che si vogliono ritornare"
+      schema:
+        type: array
+        items:
+          type: string
   responses:
     200:
       description: "elenco di tutti i prodotti"
       content:
         application/json:
           schema:
-            $ref: "schema.json#/responseProducts"
+            $ref: "../schemas/products.json#/responseProducts"
           example:
             {
               status: "success",
@@ -71,6 +78,14 @@ get:
                   },
                 ],
             }
+    400:
+      description: "indirizzo non ritornato"
+      content:
+        application/json:
+          schema:
+            $ref: "../schemas/response.json#/response"
+          example: { status: "error", message: "richiesta fallita" }
+
 
 post:
   summary: Inserimento prodotto
@@ -89,7 +104,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "schema.json#/insertProduct"
+          $ref: "../schemas/products.json#/insertProduct"
         example:
           {
             name: "scarpe",
@@ -104,47 +119,12 @@ post:
       content:
         application/json:
           schema:
-            $ref: "../utils/schema.json#/response"
+            $ref: "../schemas/response.json#/response"
           example: { status: "success", message: "prodotto inserito" }
     400:
       description: "Prodotto non inserito"
       content:
         application/json:
           schema:
-            $ref: "../utils/schema.json#/response"
+            $ref: "../schemas/response.json#/response"
           example: { status: "error", message: "prodotto non inserito" }
-
-patch:
-  summary: Modifica prodotto
-  description: Modifica il prodotto nel DB
-  tags:
-    - products
-  parameters:
-    - in: header
-      name: Authorization
-      description: token JWT
-      schema:
-        type: string
-      required: true
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: "schema.json#/editProduct"
-        example: { id: "123VF", price: 8.00 }
-  responses:
-    200:
-      description: "Modifica riuscita"
-      content:
-        application/json:
-          schema:
-            $ref: "../utils/schema.json#/response"
-          example: { status: "success", message: "modifica riuscita" }
-    400:
-      description: "Modifica non riuscita"
-      content:
-        application/json:
-          schema:
-            $ref: "../utils/schema.json#/response"
-          example: { status: "error", message: "modifica non riuscita" }
