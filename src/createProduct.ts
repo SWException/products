@@ -1,35 +1,45 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import fetch from 'node-fetch';
 import Product from 'src/types/Product';
 import API_RESPONSES from "src/utils/apiResponses";
-import { getTokenFromEvent, getBodyDataFromEvent } from "src/utils/checkJWT";
-import {S3 as s3} from "src/utils/s3"
+import { S3 as s3 } from "src/utils/s3"
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
-    //console.log("event", event);
 
-    const TOKEN = getTokenFromEvent(event);
+    // checking for the permissions
+    const TOKEN = event.headers?.Authorization;;
     if (TOKEN == null) {
-        return API_RESPONSES._400(null, "error", "manca TOKEN");
+        return API_RESPONSES._400(null, "error", "missing authentication token");
     }
-    else {
-        const USER: User = await User.createUser(TOKEN);
-        if (!(USER && USER.isAuthenticate() && USER.isAdmin())) {
-            return API_RESPONSES._400(null,
-                "error", "TOKEN non valido o scaduto");
-        }
+    const DATA = async () => {
+        await fetch(`https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "success")
+                    throw new Error(data.message);
+                if (data.username != "vendor")
+                    throw new Error("Only a vendor can remove a category");
+                return JSON.parse(event?.body);
+            })
+            .catch((err) => {
+                console.log(err)
+                return null
+            })
+    }
+    if (!DATA) {
+        return API_RESPONSES._400(null, null, "error during the permissions check")
     }
 
-    const DATA = JSON.parse(event.body);
+
     // handle product image (only if there is an image)
     if (DATA.image) {
-        
         try {
-            const BUCKETNAME= process.env.PRODUCT_IMG_BUCKET;
+            const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
             //DATA.image become an URL
-            DATA.image = await s3.uploadImage(DATA.image.imageCode,  BUCKETNAME); 
-        } 
+            DATA.image = s3.uploadImage(DATA.image.imageCode, BUCKETNAME);
+        }
         catch (err) {
-            return API_RESPONSES._400(null, "error", '' + err.name + ''  +  err.message+'');
+            return API_RESPONSES._400(null, "error", '' + err.name + '' + err.message + '');
         }
     }
     const RES: boolean = await Product.createNewProduct(DATA);
@@ -39,5 +49,5 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     if (RES)
         return API_RESPONSES._200(null);
     else
-        return API_RESPONSES._400(null);
+        return API_RESPONSES._400(null, null, "error in the creation of the product");
 }

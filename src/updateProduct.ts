@@ -1,41 +1,38 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
-import Product from 'src/Product';
 import API_RESPONSES from "src/utils/apiResponses"
-import { getTokenFromEvent, getBodyDataFromEvent } from "src/utils/checkJWT";
 import { S3 as s3 } from "src/utils/s3"
+import Product from './types/Product';
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
-    //console.log("event", event);
-
-    const TOKEN = getTokenFromEvent(event);
+    // checking for the permissions
+    const TOKEN = event.headers?.Authorization;;
     if (TOKEN == null) {
-        return API_RESPONSES._400(null, "error", "manca TOKEN");
+        return API_RESPONSES._400(null, "error", "missing authentication token");
     }
-
-    // chiamata a microservizio users
-    let ciao;
-    await fetch('https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/jwt/' + TOKEN).then(async data => { ciao = await data.json(); });
-    console.log(ciao);
-    return API_RESPONSES._200(ciao);
-
-}
-    /*else {
-    const USER: User = await User.createUser(TOKEN);
-    if (!(USER && USER.isAuthenticate() && USER.isAdmin())) {
-        return API_RESPONSES._400(null,
-            "error", "TOKEN non valido o scaduto");
+    const DATA = async () => {
+        await fetch(`https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "success")
+                    throw new Error(data.message);
+                if (data.username != "vendor")
+                    throw new Error("Only a vendor can remove a category");
+                return JSON.parse(event?.body);
+            })
+            .catch((err) => {
+                console.log(err)
+                return null
+            })
     }
-}*/
-
-/*
-let PRODUCT_ID: number = +event.pathParameters?.id;
-if(!PRODUCT_ID){
-    return API_RESPONSES._400(null, "error", "id prodotto non presente");
-}
-*/
-/*
-    const DATA = getBodyDataFromEvent(event);
+    if (!DATA) {
+        return API_RESPONSES._400(null, null, "error during the permissions check")
+    }
+    //check for the id of the product 
+    const PRODUCT_ID: string = event.pathParameters?.id;
+    if (!PRODUCT_ID) {
+        return API_RESPONSES._400(null, null, "id prodotto non presente");
+    }
     //image replacing, if needed
     if (DATA['image']) {
         const BUCKETNAME= process.env.PRODUCT_IMG_BUCKET;
@@ -49,5 +46,3 @@ if(!PRODUCT_ID){
 
     return API_RESPONSES._200(JSON.parse(JSON.stringify(RES)));
 }
-
-*/
