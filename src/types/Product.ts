@@ -3,7 +3,6 @@ import { DYNAMO } from "src/utils/Dynamo";
 
 import { buildAjv } from 'src/utils/configAjv';
 import Ajv from "ajv"
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { S3 as s3 } from "src/utils/s3"
 const AJV: Ajv = buildAjv();
 
@@ -18,6 +17,7 @@ export default class Product {
     private readonly price: number;
     private readonly netPrice: number;
     private readonly tax: number;
+    private readonly images: { [image: string]: any}
 
     // INTERFACCIA PUBBLICA
     public getJson(): JSON {
@@ -47,12 +47,7 @@ export default class Product {
         }
         console.log("Product " + id + ": " + JSON.stringify(PRODUCT_JSON));
 
-        return new Product(PRODUCT_JSON[0].id,
-            PRODUCT_JSON[0].name,
-            PRODUCT_JSON[0].description,
-            PRODUCT_JSON[0].category,
-            PRODUCT_JSON[0].netPrice,
-            PRODUCT_JSON[0].tax);
+        return new Product(PRODUCT_JSON[0])
     }
 
     /**
@@ -88,6 +83,12 @@ export default class Product {
         }
     }
 
+    /**
+     * 
+     * @param PRODUCT_ID id of the product to be updated
+     * @param DATA data to be updated
+     * @returns the result of the query
+    */
     public static async updateProduct(PRODUCT_ID: string, DATA: JSON):
         Promise<boolean> {
         //image replacing, if needed
@@ -109,24 +110,34 @@ export default class Product {
 
     // TODO: per ora ho fatto una cosa semplice,
     //poi è il caso di creare tanti Product e ritornare Array<Product>?
-    public static async buildAllProduct(DATA: JSON): Promise<DocumentClient.AttributeMap> {
+    public static async buildAllProduct(DATA: JSON): Promise<Array<Product>> {
         console.log(DATA); //dati per filtrare e ordinare
         // TODO: Da aggiungere i filtri e ordinamento appena ci sarà il metodo disponibile in Dynamodb.ts
-        const PRODUCT = await DYNAMO.getScan(Product.TABLE);
-        return PRODUCT;
+        const PRODUCTS_JSON = await DYNAMO.getScan(Product.TABLE);
+        const PRODUCTS: Array<Product>=[]
+        for (let i = 0; i < PRODUCTS_JSON.length; i++) {
+            PRODUCTS.push(new Product(PRODUCTS_JSON[i]));
+        }
+        return PRODUCTS;
     }
 
     // METODI PRIVATI
-    private constructor(id: string, name: string, description: string, category: string,
-        netPrice: number, tax: number) {
-
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.netPrice = netPrice;
-        this.tax = tax;
+    private constructor(product: {[key: string]: any}) {
+        this.id = product.id;
+        this.name = product.name;
+        this.description = product.description;
+        this.category = product.category;
+        this.netPrice = product.netPrice;
+        this.tax = product.tax;
         this.price = this.calculatePrice();
+        if (product.images) {
+            for(let i=0; i<product.images.length; i++) {
+                this.images[i]={image: product.images.image[i]}
+            }
+        }
+        else {
+            this.images=[];
+        }
     }
 
     private calculatePrice() {
