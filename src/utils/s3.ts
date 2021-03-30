@@ -38,7 +38,7 @@ export const S3 = {
         }
         const NAME = uuid(); //create a Universal Unique ID to name the img with
         const KEY = `${NAME}.${FILEINFO.ext}`;  //create a unique name for the file
-        const URL = `https://${bucketName}.s3-${process.env.REGION}.amazonaws.com/${key}`;
+        const URL = `https://${bucketName}.s3-${process.env.REGION}.amazonaws.com/${KEY}`;
         //upload to s3
         await this.uploadFile(bucketName, BUFFER, KEY, FILEINFO.mime);//TODO: error handling
 

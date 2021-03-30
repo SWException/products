@@ -75,7 +75,7 @@ resources:
             AttributeType: "S"
           - AttributeName: id
             AttributeType: "S"
-          - AttributeName: price
+          - AttributeName: netPrice
             AttributeType: "N"
         KeySchema:
           - AttributeName: category
@@ -87,7 +87,7 @@ resources:
             KeySchema:
               - AttributeName: category
                 KeyType: HASH
-              - AttributeName: price
+              - AttributeName: netPrice
                 KeyType: RANGE
             Projection: 
               ProjectionType: "ALL"

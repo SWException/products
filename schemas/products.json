@@ -16,11 +16,19 @@
             "category": { "type": "string", "minLength": 1},
             "price": { "type": "number", "format": "float", "minimum": 0 },
             "netPrice": { "type": "number", "format": "float", "minimum": 0 },
-            "tax": { "type": "string" },
+            "tax": { "type": "number", "format":"int64" },
             "show": { "type": "boolean" },
             "showHome": { "type": "boolean" },
             "stock": { "type": "integer", "format": "int64", "minimum": 0 }
         }
+    },
+    "dbProduct": {
+        "allOf" : [
+            { "$ref": "#/product" },
+            {
+                "required": ["id", "name", "description", "category", "netPrice", "tax"]
+            }
+        ]
     },
     "insertProduct": {
         "allOf" : [

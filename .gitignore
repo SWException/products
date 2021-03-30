@@ -47,4 +47,3 @@ _build/
 coverage/
 .dynamodb/
 RemoteSystemsTempFiles/
-.vscode
