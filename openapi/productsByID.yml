@@ -1,6 +1,6 @@
 get:
-  summary: Richiesta prodotto
-  description: Ritorna le informazioni di un singolo prodotto richiesto tramite ID in path param
+  summary: Get product details
+  description: Return details about the product with the passed ID
   operationId: getPDP
   tags:
     - products
@@ -12,7 +12,7 @@ get:
       required: true
   responses:
     200:
-      description: "prodotto trovato"
+      description: "product didn't found"
       content:
         application/json:
           schema:
@@ -39,7 +39,7 @@ get:
                 },
             }
     400:
-      description: "prodotto non trovato"
+      description: "request error"
       content:
         application/json:
           schema:
@@ -47,8 +47,8 @@ get:
           example: { status: "error", message: "articolo non presente" }
 
 patch:
-  summary: Modifica prodotto
-  description: Modifica il prodotto nel DB
+  summary: Modify product
+  description: Change information about the product specified with the ID
   tags:
     - products
   parameters:
@@ -72,14 +72,14 @@ patch:
         example: { id: "123VF", price: 8.00 }
   responses:
     200:
-      description: "Modifica riuscita"
+      description: "modify successful"
       content:
         application/json:
           schema:
             $ref: "../schemas/response.json#/response"
           example: { status: "success", message: "modifica riuscita" }
     400:
-      description: "Modifica non riuscita"
+      description: "request error"
       content:
         application/json:
           schema:
@@ -87,8 +87,8 @@ patch:
           example: { status: "error", message: "modifica non riuscita" }
           
 delete:
-  summary: Rimozione prodotto
-  description: Rimuove il prodotto identificato dall'ID passato tramite path param
+  summary: Delete a product
+  description: Remove the product with the specified ID
   tags:
     - products
   operationId: removeProduct
@@ -110,14 +110,14 @@ delete:
         type: boolean
   responses:
     200:
-      description: "Prodotto Rimosso"
+      description: "Product removed"
       content:
         application/json:
           schema:
             $ref: "../schemas/response.json#/response"
           example: { status: "success", message: "Prodotto rimosso" }
     400:
-      description: "Prodotto non rimosso per qualche errore"
+      description: "request error"
       content:
         application/json:
           schema:

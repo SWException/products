@@ -1,6 +1,6 @@
 get:
-  summary: Richiesta lista prodotti
-  description: Ritorna l'elenco di tutti i prodotti disponibili
+  summary: Get products
+  description: Return the list of all the available products which respect filters
   tags:
     - products
   operationId: getProducts
@@ -33,7 +33,7 @@ get:
           type: string
   responses:
     200:
-      description: "elenco di tutti i prodotti"
+      description: "product list"
       content:
         application/json:
           schema:
@@ -79,7 +79,7 @@ get:
                 ],
             }
     400:
-      description: "indirizzo non ritornato"
+      description: "request error"
       content:
         application/json:
           schema:
@@ -88,8 +88,8 @@ get:
 
 
 post:
-  summary: Inserimento prodotto
-  description: Inserisce il prodotto nel DB
+  summary: Add product
+  description: Create a new product
   tags:
     - products
   parameters:
@@ -115,14 +115,14 @@ post:
           }
   responses:
     200:
-      description: "Prodotto inserito"
+      description: "Product inserted"
       content:
         application/json:
           schema:
             $ref: "../schemas/response.json#/response"
           example: { status: "success", message: "prodotto inserito" }
     400:
-      description: "Prodotto non inserito"
+      description: "request error"
       content:
         application/json:
           schema:
