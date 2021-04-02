@@ -1,10 +1,10 @@
-export interface persistence {
+export interface Persistence {
     getIndexPartition(TableName: string,
         index: string, partitionKey: string,
         partitionValue: string, sort: string):
         Promise<AWS.DynamoDB.DocumentClient.AttributeMap>;
     
-    write (TableName: string, data: { [key: string]: never }): Promise<boolean>;  
+    write (TableName: string, data: JSON): Promise<boolean>;  
     
     update (TableName: string, id: string, data: JSON): Promise<boolean>;
 

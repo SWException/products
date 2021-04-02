@@ -1,7 +1,8 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
-import Product from 'src/types/Product';
+import Product from 'src/core/product';
 import API_RESPONSES from "src/utils/apiResponses";
+import { Model } from "../core/model"
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
 
@@ -11,7 +12,8 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, "error", "missing authentication token");
     }
     const DATA = async () => {
-        await fetch(`https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
+        await fetch(
+            `https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status != "success")
@@ -28,8 +30,8 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     if (!DATA) {
         return API_RESPONSES._400(null, null, "error during the permissions check")
     }
-
-    const RES: boolean = await Product.createNewProduct(DATA);
+    const MODEL: Model = Model.createModel();
+    const RES: boolean = await MODEL.createNewProduct(DATA);
 
     console.log(JSON.stringify(RES));
 

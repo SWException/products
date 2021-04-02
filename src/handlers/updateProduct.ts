@@ -1,11 +1,11 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
 import API_RESPONSES from "src/utils/apiResponses"
-import Product from './types/Product';
+import Product from 'src/core/Product';
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
     // checking for the permissions
-    const TOKEN = event.headers?.Authorization;;
+    const TOKEN = event.headers?.Authorization;
     if (TOKEN == null) {
         return API_RESPONSES._400(null, "error", "missing authentication token");
     }

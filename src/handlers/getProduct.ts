@@ -1,11 +1,13 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import Product from 'src/types/Product';
+import { Model } from 'src/core/model';
+import Product from 'src/core/Product';
 import API_RESPONSES from "src/utils/apiResponses"
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const PRODUCT_ID = event.pathParameters?.id;
 
-    const PRODUCT: Product = await Product.buildProduct(PRODUCT_ID);
+    const MODEL: Model = Model.createModel();
+    const PRODUCT: Product = await MODEL.buildProduct(PRODUCT_ID);
 
     console.log(JSON.stringify(PRODUCT));
 
