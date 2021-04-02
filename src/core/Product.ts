@@ -1,7 +1,6 @@
 
 
 export default class Product {
-    private static readonly TABLE = "products";
 
     // CAMPI DATI
     private readonly id: string;
