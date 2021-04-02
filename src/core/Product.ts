@@ -1,4 +1,4 @@
-import { DYNAMO } from "src/utils/Dynamo";
+import { DYNAMO } from "src/repository/dynamo";
 // import List from 'typescript.list';
 
 import { buildAjv } from 'src/utils/configAjv';

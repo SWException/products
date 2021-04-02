@@ -1,7 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
 import API_RESPONSES from "src/utils/apiResponses"
-import { S3 as s3 } from "src/utils/s3"
 import Product from './types/Product';
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
@@ -10,7 +9,8 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     if (TOKEN == null) {
         return API_RESPONSES._400(null, "error", "missing authentication token");
     }
-    const DATA = await fetch(`https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
+    const DATA = await fetch(
+        `https://95kq9eggu9.execute-api.eu-central-1.amazonaws.com/dev/users/check/${TOKEN}`)
         .then(response => response.json())
         .then(data => {
             if (data.status != "success")
@@ -24,7 +24,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
             return null
         })
     if (!DATA) {
-        return API_RESPONSES._400(null, null, "error during the permissions check")
+        return API_RESPONSES._400(null, "error", "error during the permissions check")
     }
     //check for the id of the product 
     const PRODUCT_ID: string = event.pathParameters?.id;

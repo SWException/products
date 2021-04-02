@@ -1,9 +1,21 @@
 import * as AWS from "aws-sdk";
 import generateID from "src/utils/generateID";
+import { persistence } from "./persistence";
 
 const DOCUMENT_CLIENT =
     new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
-export const DYNAMO = {
+export class DYNAMO implements persistence {
+
+    /**
+     * delete the item with the given id from the db
+     * @param TableName 
+     * @param id 
+     */
+    
+    async delete(TableName: string, id: string): Promise<boolean> {
+        throw new Error("Method not implemented.");
+        //TODO
+    }
     async getScan (TableName: string):
         Promise<AWS.DynamoDB.DocumentClient.AttributeMap> {
         const PARAMS = {

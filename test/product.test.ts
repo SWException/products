@@ -1,4 +1,4 @@
-import Product from "../src/types/Product"
+import Product from "../src/core/Product"
 import { matchersWithOptions } from 'jest-json-schema';
 import { JSONSchema7 } from "json-schema";
 import { SCHEMAS, setFormats } from '../src/utils/configAjv';
