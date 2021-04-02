@@ -2,6 +2,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
 import API_RESPONSES from "src/utils/apiResponses"
 import Product from 'src/core/Product';
+import { Model } from 'src/core/model';
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
     // checking for the permissions
@@ -32,7 +33,8 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, null, "id prodotto non presente");
     }
 
-    const RES = await Product.updateProduct(DATA['id'], DATA);
+    const MODEL: Model = Model.createModel();
+    const RES = await MODEL.updateProduct(DATA['id'], DATA);
 
     console.log(JSON.stringify(RES));
 

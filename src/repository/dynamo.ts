@@ -1,5 +1,4 @@
 import * as AWS from "aws-sdk";
-import generateID from "src/utils/generateID";
 import { Persistence } from "./persistence";
 
 
@@ -153,12 +152,10 @@ async append (TableName: string, field: string, id: string,
 async write (TableName: string, 
     data: { [key: string]: any }): Promise<boolean> {
 
-    const KEY = generateID();
-    data["id"] = KEY;
     const PARAMS = {
         TableName: TableName,
         Key: {
-            id: KEY
+            id: data.id
         },
         Item: data
     };
