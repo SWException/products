@@ -4,7 +4,18 @@ import { Persistence } from "./persistence";
 
 export class Dynamo implements Persistence {
 
+    /**
+     * 
+     * @param TableName 
+     * @param id id of the product
+     * @param quantity the amount to add or remove from stock (can be negative)
+     */
+    changeStock(TableName: string, id: string, quantity: number): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
+
 DOCUMENT_CLIENT = new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
+
 /**
      * delete the item with the given id from the db
      * @param TableName 
@@ -15,6 +26,9 @@ async delete(TableName: string, id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
     //TODO
 }
+
+
+
 async getScan (TableName: string):
         Promise<AWS.DynamoDB.DocumentClient.AttributeMap> {
     const PARAMS = {

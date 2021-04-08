@@ -1,4 +1,5 @@
 export interface Persistence {
+    
     getIndexPartition(TableName: string,
         index: string, partitionKey: string,
         partitionValue: string, sort: string):
@@ -11,4 +12,7 @@ export interface Persistence {
     getScan (TableName: string): Promise<AWS.DynamoDB.DocumentClient.AttributeMap>;
 
     delete (TableName: string, id: string): Promise<boolean>;
+
+    changeStock(TableName: string, id: string, quantity: number): Promise<boolean>;
+
 }
