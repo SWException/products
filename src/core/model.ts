@@ -41,6 +41,10 @@ export class Model {
         return new Product(PRODUCT_JSON[0])
     }
 
+    public async changeStock (id: string, quantity:number) {
+        //TODO
+    }
+
     /**
          * add a product to the database after having checked the data passed are correct 
          * @param data product data

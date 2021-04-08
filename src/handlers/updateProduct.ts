@@ -1,7 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
 import API_RESPONSES from "src/utils/apiResponses"
-import Product from 'src/core/Product';
 import { Model } from 'src/core/model';
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
