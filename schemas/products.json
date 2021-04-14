@@ -20,17 +20,10 @@
             "images": {
                 "type": "array",
                 "items": {
-                    "image": {
-                        "type": "object",
-                        "properties": {
-                            "image": {
-                                "type": "string"
-                            }
-                        },
-                        "uniqueItems": true,
-                        "maxItems": 4
-                    }
-                }
+                    "type": "string"
+                },
+                "uniqueItems": true,
+                "maxItems": 4
             },
             "category": {
                 "type": "string",
