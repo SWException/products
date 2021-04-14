@@ -1,6 +1,4 @@
-
-
-export default class Product {
+export class Product {
 
     // CAMPI DATI
     private readonly id: string;
@@ -10,10 +8,10 @@ export default class Product {
     private readonly price: number;
     private readonly netPrice: number;
     private readonly tax: number;
-    private readonly images: { [image: string]: any}
+    private readonly images: { [image: string]: any};
 
     
-    constructor(product: {[key: string]: any}) {
+    constructor (product: {[key: string]: any}) {
         this.id = product.id;
         this.name = product.name;
         this.description = product.description;
@@ -23,7 +21,7 @@ export default class Product {
         this.price = this.calculatePrice();
         if (product.images) {
             for(let i=0; i<product.images.length; i++) {
-                this.images[i]={image: product.images.image[i]}
+                this.images[i]={image: product.images.image[i]};
             }
         }
         else {
@@ -32,7 +30,7 @@ export default class Product {
     }
     
     // METODI PRIVATI
-    private calculatePrice() {
-        return this.netPrice * (this.tax / 100 + 1)
+    private calculatePrice () {
+        return this.netPrice * (this.tax / 100 + 1);
     }
 }

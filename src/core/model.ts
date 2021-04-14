@@ -1,26 +1,26 @@
-import { Persistence } from "../repository/persistence"
-import { Dynamo } from "src/repository/dynamo"
-import { DbMock } from "../repository/dbMock";
-import Product from "./product";
+import { Persistence } from "../repository/persistence/persistence"
+import { Dynamo } from "src/repository/persistence/dynamo"
+import { DbMock } from "../repository/persistence/dbMock";
+import { Product } from "../repository/product";
 import { v4 as uuidv4 } from 'uuid';
 import { buildAjv } from 'src/utils/configAjv';
-import { S3 as s3 } from "src/repository/s3"
+import { S3 as s3 } from "src/repository/persistence/s3"
 import Ajv from "ajv";
 
 export class Model {
     private readonly DATABASE: Persistence;
     private readonly AJV: Ajv = buildAjv();
-    private readonly TABLE = "products"
+    private static readonly TABLE = "products"
 
-    private constructor(db: Persistence) {
+    private constructor (db: Persistence) {
         this.DATABASE = db;
     }
 
-    public static createModel(): Model {
+    public static createModel (): Model {
         return new Model(new Dynamo());
     }
 
-    public static createModelMock(): Model {
+    public static createModelMock (): Model {
         return new Model(new DbMock());
     }
 
@@ -29,20 +29,18 @@ export class Model {
          * @param id id of the product
          * @returns the product with the given id
          */
-    public async buildProduct(id: string): Promise<Product> {
-        const PRODUCT_JSON: JSON = await this.DATABASE.getIndexPartition(
-            this.TABLE, "id-index", "id", id, null) as JSON;
-        if (PRODUCT_JSON == null) {
+    public async buildProduct (id: string): Promise<Product> {
+        const PRODUCT: Product = await this.DATABASE.get(Model.TABLE, id);
+        if (PRODUCT == null) {
             console.log("Product " + id + " not found");
             return null;
         }
-        console.log("Product " + id + ": " + JSON.stringify(PRODUCT_JSON));
-
-        return new Product(PRODUCT_JSON[0])
+        console.log("Product " + id + ": " + JSON.stringify(PRODUCT));
+        return PRODUCT;
     }
 
-    public async changeStock (id: string, quantity:number) {
-        //TODO
+    public async changeStock (id: string, quantity: number): Promise<boolean> {
+        return this.DATABASE.changeStock(Model.TABLE, id, quantity);
     }
 
     /**
@@ -50,7 +48,7 @@ export class Model {
          * @param data product data
          * @returns the result of the insertion
          */
-    public async createNewProduct(data: { [key: string]: any }):
+    public async createNewProduct (data: { [key: string]: any }):
         Promise<boolean> {
 
         // handle product image (only if there is an image)
@@ -70,8 +68,9 @@ export class Model {
         const VALID = this.AJV.validate("src/products/schema.json#/insertProduct", data);
         if (VALID) {
             data.id = uuidv4();
-            const PRODUCT = await this.DATABASE.write(this.TABLE, JSON.parse(JSON.stringify(data)));
-            return PRODUCT;
+            const RES: Promise<boolean> = this.DATABASE.write(Model.TABLE,
+                JSON.parse(JSON.stringify(data)));
+            return RES;
         }
         else {
             // i dati in ingresso per creare l'oggetto non rispettano lo json-schema
@@ -85,7 +84,7 @@ export class Model {
          * @param DATA data to be updated
          * @returns the result of the query
         */
-    public async updateProduct(PRODUCT_ID: string, DATA: JSON):
+    public async updateProduct (PRODUCT_ID: string, DATA: JSON):
         Promise<boolean> {
         //image replacing, if needed
         if (DATA['image']) {
@@ -95,7 +94,7 @@ export class Model {
         }
         const VALID = this.AJV.validate("src/products/schema.json#/editProduct", DATA);
         if (VALID) {
-            const PRODUCT = await this.DATABASE.update(this.TABLE, PRODUCT_ID, DATA);
+            const PRODUCT = await this.DATABASE.update(Model.TABLE, PRODUCT_ID, DATA);
             return PRODUCT;
         }
         else {
@@ -106,10 +105,10 @@ export class Model {
 
     // TODO: per ora ho fatto una cosa semplice,
     //poi è il caso di creare tanti Product e ritornare Array<Product>?
-    public async buildAllProduct(DATA: JSON): Promise<Array<Product>> {
+    public async buildAllProduct (DATA: JSON): Promise<Array<Product>> {
         console.log(DATA); //dati per filtrare e ordinare
         // TODO: Da aggiungere i filtri e ordinamento 
-        const PRODUCTS_JSON = await this.DATABASE.getScan(this.TABLE);
+        const PRODUCTS_JSON = await this.DATABASE.getScan(Model.TABLE);
         const PRODUCTS: Array<Product> = []
         for (let i = 0; i < PRODUCTS_JSON.length; i++) {
             PRODUCTS.push(new Product(PRODUCTS_JSON[i]));

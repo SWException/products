@@ -1,6 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { Model } from 'src/core/model';
-import Product from 'src/core/Product';
+import { Model } from 'src/core/model';;
 import API_RESPONSES from "src/utils/apiResponses"
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {

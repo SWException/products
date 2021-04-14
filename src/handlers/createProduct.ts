@@ -1,6 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import fetch from 'node-fetch';
-import Product from 'src/core/product';
 import API_RESPONSES from "src/utils/apiResponses";
 import { Model } from "../core/model"
 
