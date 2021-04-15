@@ -7,7 +7,7 @@
                 "type": "string",
                 "minLength": 1
             },
-            "name": {
+            "productName": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 50
@@ -17,7 +17,12 @@
                 "minLength": 1,
                 "maxLength": 250
             },
-            "images": {
+            "primaryPhoto":{
+                "type": "string",
+                "minLength": 1
+
+            },
+            "secondaryPhotos": {
                 "type": "array",
                 "items": {
                     "type": "string"
@@ -64,7 +69,7 @@
             {
                 "required": [
                     "id",
-                    "name",
+                    "productName",
                     "description",
                     "category",
                     "netPrice",
@@ -80,7 +85,7 @@
             },
             {
                 "required": [
-                    "name",
+                    "productName",
                     "description",
                     "netPrice",
                     "tax"

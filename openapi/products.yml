@@ -45,7 +45,7 @@ get:
                 [
                   {
                     id: "123VF",
-                    name: "gioco",
+                    productName: "gioco",
                     description: "descrizione del prodotto",
                     primaryPhoto: /image.jpg,
                     secondaryPhotos:
@@ -61,7 +61,7 @@ get:
                   },
                   {
                     id: "321VF",
-                    name: "gioco2",
+                    productName: "gioco2",
                     description: "descrizione del prodotto",
                     primaryPhoto: /image.jpg,
                     secondaryPhotos:
@@ -107,7 +107,7 @@ post:
           $ref: "../schemas/products.json#/insertProduct"
         example:
           {
-            name: "scarpe",
+            productName: "scarpe",
             description: "queste sono delle bellissime scarpe",
             price: 50.00,
             tax: 22,

@@ -12,7 +12,7 @@ get:
       required: true
   responses:
     200:
-      description: "product didn't found"
+      description: "product found"
       content:
         application/json:
           schema:
@@ -23,19 +23,19 @@ get:
               data:
                 {
                   id: "XYZ123",
-                  name: "casetta",
+                  productName: "casetta",
                   description: "Casetta in legno massello adattata a tutte le temperature",
-                  primaryPhoto: /image.jpg,
+                  primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                   secondaryPhotos:
                     [
-                      "/image.jpg",
+                      "https://www.tgtourism.tv/wp-content/uploads/2018/03/topolino.jpg",
                     ],
                   category: "casetta",
                   price: 9.99,
                   tax: 22,
                   show: true,
                   showHome: false,
-                  stock: 123,
+                  stock: 123
                 },
             }
     400:
