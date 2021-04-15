@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.com/SWException/products.svg?branch=main)](https://travis-ci.com/SWException/products)
 
 ## Develop
-[![Build Status](https://travis-ci.com/SWException/products.svg?branch=products)](https://travis-ci.com/SWException/products)
+[![Build Status](https://travis-ci.com/SWException/products.svg?branch=develop)](https://travis-ci.com/SWException/products)
 
 [![Tests status](https://github.com/SWException/products/actions/workflows/node.js.yml/badge.svg)](https://github.com/SWException/products/actions/workflows/node.js.yml)
 
