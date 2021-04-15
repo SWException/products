@@ -6,11 +6,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { buildAjv } from 'src/utils/configAjv';
 import { S3 as s3 } from "src/repository/persistence/s3"
 import Ajv from "ajv";
+import { Taxes } from "src/repository/taxes/taxes";
 
 export class Model {
     private readonly DATABASE: Persistence;
     private readonly AJV: Ajv = buildAjv();
-    private static readonly TABLE = "products"
+    private static readonly TABLE = "products";
+    private readonly TAXES: Taxes;
+    private readonly CATEGORIES: Categories;
 
     private constructor (db: Persistence) {
         this.DATABASE = db;
@@ -52,11 +55,17 @@ export class Model {
         Promise<boolean> {
 
         // handle product image (only if there is an image)
-        if (data.image) {
+        if (data.primaryPhoto) {
             try {
                 const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
                 //DATA.image become an URL
-                data.image = await s3.uploadImage(data.image, BUCKETNAME);
+                data.primaryPhoto = await s3.uploadImage(data.primaryPhoto, BUCKETNAME);
+                if (data.secondaryPhotos) {
+                    for (let i = 0; i < data.secondaryPhotos.length; i++) {
+                        data.secondaryPhotos[i] = 
+                        await s3.uploadImage(data.secondaryhotos[i], BUCKETNAME);
+                    }
+                }
             }
             catch (err) {
                 console.log(err.message)
@@ -87,11 +96,17 @@ export class Model {
     public async updateProduct (PRODUCT_ID: string, DATA: JSON):
         Promise<boolean> {
         //image replacing, if needed
-        if (DATA['image']) {
+        if (DATA['primaryPhoto']) {
             const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
-            s3.deleteFile(BUCKETNAME, DATA['image'].key)
-            DATA['image'] = await s3.uploadImage(DATA['image'].imageCode, BUCKETNAME);
+            s3.deleteFile(BUCKETNAME, DATA['primaryPhoto'].key)
+            DATA['primaryPhoto'] = await s3.uploadImage(DATA['primaryPhoto'], BUCKETNAME);
         }
+        if (DATA['secondaryPhotos']) {
+            const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
+            s3.deleteFile(BUCKETNAME, DATA[''].key)
+            DATA['primaryPhoto'] = await s3.uploadImage(DATA['primaryPhoto'], BUCKETNAME);
+        }
+
         const VALID = this.AJV.validate("src/products/schema.json#/editProduct", DATA);
         if (VALID) {
             const PRODUCT = await this.DATABASE.update(Model.TABLE, PRODUCT_ID, DATA);
