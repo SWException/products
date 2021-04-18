@@ -7,6 +7,7 @@ import { buildAjv } from 'src/utils/configAjv';
 import { S3 as s3 } from "src/repository/persistence/s3"
 import Ajv from "ajv";
 import { Taxes } from "src/repository/taxes/taxes";
+import { Categories } from "src/repository/categories/categories";
 
 export class Model {
     private readonly DATABASE: Persistence;
