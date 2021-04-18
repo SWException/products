@@ -1,4 +1,4 @@
-import { Product } from "src/core/product";
+import { Product } from "src/repository/product";
 import { Persistence } from "src/repository/persistence";
 import * as AWS from "aws-sdk";
 
@@ -16,8 +16,7 @@ export class Dynamo implements Persistence {
         console.log("Data from DB: " + JSON.stringify(DATA));
         const PRODUCTS = new Array<Product>();
         DATA.Items.forEach(element => {
-            PRODUCTS.push(new Product(element.id, element.name, element.description, element.primaryPhoto, element.secondaryPhoto, element.category, 
-                element.price, element.netPrice, element.tax, element.show, element.showHome, element.stock));
+            PRODUCTS.push(new Product(element));
         });
 
         return PRODUCTS ;
@@ -33,8 +32,7 @@ export class Dynamo implements Persistence {
         };
 
         const DATA = await this.DOCUMENT_CLIENT.get(PARAMS).promise();
-        return DATA.Item? new Product(DATA.Item.id, DATA.Item.name, DATA.Item.description, DATA.Item.primaryPhoto, DATA.Item.secondaryPhoto, DATA.Item.category, 
-            DATA.Item.price, DATA.Item.netPrice, DATA.Item.tax, DATA.Item.show, DATA.Item.showHome, DATA.Item.stock) : null;
+        return DATA.Item? new Product(DATA.Item) : null;
     }
 
     public async addItem (item: Product): Promise<boolean> {
