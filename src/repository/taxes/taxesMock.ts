@@ -1,6 +1,6 @@
 import { Taxes } from "./taxes";
 
-class TaxesMock implements Taxes {
+export class TaxesMock implements Taxes {
     public async getAllTaxes (): Promise<any>{
         return {
             taxes: [

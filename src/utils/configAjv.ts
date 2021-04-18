@@ -8,7 +8,7 @@ export const SCHEMAS = {
     strict: false
 };
 
-export function setFormats(ajv): void {
+export function setFormats (ajv): void {
     ajv.addFormat("float", {
         type: "number",
         validate: /^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$/
@@ -18,7 +18,7 @@ export function setFormats(ajv): void {
     ajv.addFormat("uri", { type: "string" });
 }
 
-export function buildAjv(): Ajv {
+export function buildAjv (): Ajv {
     const AJV: Ajv = new Ajv(SCHEMAS);
     setFormats(AJV);
     return AJV;

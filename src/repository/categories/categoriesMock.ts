@@ -1,6 +1,6 @@
 import { Categories } from "./categories";
 
-class CategoriesMock implements Categories {
+export class CategoriesMock implements Categories {
     
     public async getCategoryName (id: string): Promise<string> {
         return id? "category" : null;

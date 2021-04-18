@@ -7,7 +7,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const PRODUCT_ID = event.pathParameters?.id;
 
     const MODEL: Model = Model.createModel();
-    const PRODUCT: Product = await MODEL.buildProduct(PRODUCT_ID);
+    const PRODUCT: Product = await MODEL.getProduct(PRODUCT_ID);
 
     console.log(JSON.stringify(PRODUCT));
 

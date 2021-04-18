@@ -50,11 +50,40 @@ provider:
             - s3:*
           Resource: "*"
 functions:
-  updateProduct:
-    handler: "src/updateProduct.HANDLER"
+  createProduct:
+    handler: "src/handlers/createProduct.HANDLER"
     events:
       - http:
           path: /products
+          method: POST
+          cors: true
+
+  updateProduct:
+    handler: "src/handlers/updateProduct.HANDLER"
+    events:
+      - http:
+          path: /products/{id}
+          method: PATCH
+          cors: true
+  getProduct:
+    handler: "src/handlers/getProduct.HANDLER"
+    events:
+      - http:
+          path: /products/{id}
+          method: GET
+          cors: true
+  getProducts:
+    handler: "src/handlers/getProducts.HANDLER"
+    events:
+      - http:
+          path: /products/
+          method: GET
+          cors: true
+  updateStock:
+    handler: "src/handlers/getProduct.HANDLER"
+    events:
+      - http:
+          path: /products/stock/{id}
           method: PATCH
           cors: true
 

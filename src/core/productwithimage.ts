@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * 
  * IMPORTANT
@@ -8,7 +9,8 @@
  *  
  * */
 
-const productWithImage = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PRODUCTWITHIMAGE = {
     "category": 3,
     "name": "diary",
     "description": "chit chat bla bla",

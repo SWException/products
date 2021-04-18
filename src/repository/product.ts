@@ -5,15 +5,14 @@ export class Product {
     private readonly productName: string;
     private readonly description: string;
     private readonly category: string;
-    private readonly price: number;
+    private readonly price: number ;
     private readonly netPrice: number;
-    private readonly tax: number;
+    private readonly tax: number | string;
     private readonly primaryPhoto: string;
     private readonly secondaryPhotos: Array<string>;
     private readonly stock: number;
     private readonly show: boolean;
     private readonly showHome: boolean;
-
 
     constructor (product: { [key: string]: any }) {
         this.id = product.id;
@@ -43,6 +42,7 @@ export class Product {
 
     // METODI PRIVATI
     private calculatePrice () {
-        return this.netPrice * (this.tax / 100 + 1);
+        const TAX_NUMBER = this.tax as number
+        return this.netPrice * (TAX_NUMBER / 100 + 1);
     }
 }

@@ -8,24 +8,35 @@ import { S3 as s3 } from "src/repository/persistence/s3"
 import Ajv from "ajv";
 import { Taxes } from "src/repository/taxes/taxes";
 import { Categories } from "src/repository/categories/categories";
+import { Users } from "src/repository/users/users";
+import { UsersMock } from "src/repository/users/usersMock";
+import { UsersService } from "src/repository/users/usersService";
+import { TaxesService } from "src/repository/taxes/taxesService";
+import { CategoriesService } from "src/repository/categories/categoriesService";
+import { TaxesMock } from "src/repository/taxes/taxesMock";
+import { CategoriesMock } from "src/repository/categories/categoriesMock";
 
 export class Model {
     private readonly DATABASE: Persistence;
     private readonly AJV: Ajv = buildAjv();
     private static readonly TABLE = "products";
+    private readonly USERS: Users;
     private readonly TAXES: Taxes;
     private readonly CATEGORIES: Categories;
 
-    private constructor (db: Persistence) {
+    private constructor (db: Persistence, users: Users, taxes: Taxes, categories: Categories) {
         this.DATABASE = db;
+        this.CATEGORIES=categories;
+        this.TAXES=taxes;
+        this.USERS=users;
     }
 
     public static createModel (): Model {
-        return new Model(new Dynamo());
+        return new Model(new Dynamo(), new UsersService(), new TaxesService(), new CategoriesService());
     }
 
     public static createModelMock (): Model {
-        return new Model(new DbMock());
+        return new Model(new DbMock(), new UsersMock(), new TaxesMock(), new CategoriesMock());
     }
 
     /**
@@ -33,7 +44,8 @@ export class Model {
          * @param id id of the product
          * @returns the product with the given id
          */
-    public async buildProduct (id: string): Promise<Product> {
+    public async getProduct (id: string): Promise<Product> {
+
         const PRODUCT: Product = await this.DATABASE.get(Model.TABLE, id);
         if (PRODUCT == null) {
             console.log("Product " + id + " not found");
@@ -43,7 +55,12 @@ export class Model {
         return PRODUCT;
     }
 
-    public async changeStock (id: string, quantity: number): Promise<boolean> {
+    public async changeStock (id: string, quantity: number, token: string): Promise<boolean> {
+        //check if the user is vendor
+        const IS_VENDOR = await this.USERS.checkVendor(token);
+        if (!IS_VENDOR){
+            throw new Error("invalid token");
+        }
         return this.DATABASE.changeStock(Model.TABLE, id, quantity);
     }
 
@@ -52,8 +69,13 @@ export class Model {
          * @param data product data
          * @returns the result of the insertion
          */
-    public async createNewProduct (data: { [key: string]: any }):
+    public async createProduct (data: { [key: string]: any }, token: string):
         Promise<boolean> {
+        //check if the user is vendor
+        const IS_VENDOR = await this.USERS.checkVendor(token);
+        if (!IS_VENDOR){
+            throw new Error("invalid token");
+        }
 
         // handle product image (only if there is an image)
         if (data.primaryPhoto) {
@@ -94,8 +116,13 @@ export class Model {
          * @param DATA data to be updated
          * @returns the result of the query
         */
-    public async updateProduct (PRODUCT_ID: string, DATA: JSON):
+    public async updateProduct (PRODUCT_ID: string, DATA: JSON, token: string):
         Promise<boolean> {
+        //check if the user is vendor
+        const IS_VENDOR = await this.USERS.checkVendor(token);
+        if (!IS_VENDOR){
+            throw new Error("invalid token");
+        }
         //image replacing, if needed
         if (DATA['primaryPhoto']) {
             const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
@@ -119,9 +146,10 @@ export class Model {
         }
     }
 
+
     // TODO: per ora ho fatto una cosa semplice,
     //poi è il caso di creare tanti Product e ritornare Array<Product>?
-    public async buildAllProduct (DATA: JSON): Promise<Array<Product>> {
+    public async getAllProducts (DATA: JSON): Promise<Array<Product>> {
         console.log(DATA); //dati per filtrare e ordinare
         // TODO: Da aggiungere i filtri e ordinamento 
         const PRODUCTS_JSON = await this.DATABASE.getScan(Model.TABLE);

@@ -60,10 +60,6 @@ export class Dynamo implements Persistence {
         const DATA = await this.DOCUMENT_CLIENT.get(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return new Product(DATA[0])
-        /*
-            * Il valore ritornato potrebbe essere null.
-            * Ad esempio se non esiste un carrello per quell'utente
-            */
     }
 
     public async getIndexPartition (TableName: string, 
@@ -91,10 +87,6 @@ export class Dynamo implements Persistence {
         const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items;
-        /*
-            * Il valore ritornato potrebbe essere null.
-            * Ad esempio se non esiste un carrello per quell'utente
-            */
     }
 
     async getIndexSort (TableName: string, index: string, partitionKey: string,
