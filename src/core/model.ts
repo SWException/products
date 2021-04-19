@@ -48,7 +48,7 @@ export class Model {
 
         const PRODUCT_DB: any = await this.DATABASE.get(Model.TABLE, id);
         //microservices calls
-        const PRODUCT = this.createProduct(PRODUCT_DB);
+        const PRODUCT = await this.createProduct(PRODUCT_DB);
         if (PRODUCT == null) {
             console.log("Product " + id + " not found");
             return null;
