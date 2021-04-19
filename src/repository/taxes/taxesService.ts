@@ -6,6 +6,7 @@ export class TaxesService implements Taxes {
         return await fetch(process.env.SERVICES + `/taxes/${id}`)
             .then(async response => {
                 const RESPONSE = response.json();
+                console.log(RESPONSE["data"]);
                 return RESPONSE["data"] ? RESPONSE["data"] : null;
             })
     }

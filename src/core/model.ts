@@ -167,7 +167,7 @@ export class Model {
     private async createProduct (product: any): Promise<Product> {
         //tax
         const TAX = await this.TAXES.getTax(product.tax);
-        const TAX_VALUE = TAX.value;       
+        const TAX_VALUE = TAX["value"];       
         product.tax=TAX_VALUE;
         //category
         const CATEGORY=this.CATEGORIES.getCategoryName(product.category);
