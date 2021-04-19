@@ -1,13 +1,12 @@
 export class Product {
-
     // CAMPI DATI
     private readonly id: string;
     private readonly productName: string;
     private readonly description: string;
     private readonly category: string;
-    private readonly price: number ;
+    private readonly price: number;
     private readonly netPrice: number;
-    private readonly tax: number | string;
+    private readonly tax: number;
     private readonly primaryPhoto: string;
     private readonly secondaryPhotos: Array<string>;
     private readonly stock: number;
@@ -42,7 +41,6 @@ export class Product {
 
     // METODI PRIVATI
     private calculatePrice () {
-        const TAX_NUMBER = this.tax as number
-        return this.netPrice * (TAX_NUMBER / 100 + 1);
+        return this.netPrice * (this.tax / 100 + 1);
     }
 }

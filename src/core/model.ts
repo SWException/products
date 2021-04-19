@@ -46,7 +46,9 @@ export class Model {
          */
     public async getProduct (id: string): Promise<Product> {
 
-        const PRODUCT: Product = await this.DATABASE.get(Model.TABLE, id);
+        const PRODUCT_DB: any = await this.DATABASE.get(Model.TABLE, id);
+        //microservices calls
+        const PRODUCT = this.createProduct(PRODUCT_DB);
         if (PRODUCT == null) {
             console.log("Product " + id + " not found");
             return null;
@@ -69,7 +71,7 @@ export class Model {
          * @param data product data
          * @returns the result of the insertion
          */
-    public async createProduct (data: { [key: string]: any }, token: string):
+    public async addProduct (data: { [key: string]: any }, token: string):
         Promise<boolean> {
         //check if the user is vendor
         const IS_VENDOR = await this.USERS.checkVendor(token);
@@ -155,8 +157,22 @@ export class Model {
         const PRODUCTS_JSON = await this.DATABASE.getScan(Model.TABLE);
         const PRODUCTS: Array<Product> = []
         for (let i = 0; i < PRODUCTS_JSON.length; i++) {
-            PRODUCTS.push(new Product(PRODUCTS_JSON[i]));
+            PRODUCTS.push(await this.createProduct(PRODUCTS_JSON[i]));
         }
         return PRODUCTS;
+    }
+
+
+    //PRIVATE METHODS
+    private async createProduct (product: any): Promise<Product> {
+        //tax
+        const TAX = await this.TAXES.getTax(product.tax);
+        const TAX_VALUE = TAX.value;       
+        product.tax=TAX_VALUE;
+        //category
+        const CATEGORY=this.CATEGORIES.getCategoryName(product.category);
+        product.category = CATEGORY;
+        return new Product(product);
+
     }
 }

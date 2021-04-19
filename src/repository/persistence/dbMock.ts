@@ -5,20 +5,20 @@ export class DbMock implements Persistence {
     public async getIndexPartition (TableName: string,
         index: string, partitionKey: string,
         partitionValue: string, sort: string):
-        Promise<Array<Product>>{
+        Promise<any>{
         
         return null;
     }
     
-    public async write (TableName: string, data: JSON): Promise<boolean>{
+    public async write (TableName: string, data: any): Promise<boolean>{
         return true;
     }
     
-    public async update (TableName: string, id: string, data: JSON): Promise<boolean>{
+    public async update (TableName: string, id: string, data: any): Promise<boolean>{
         return true;
     }
 
-    public async getScan (TableName: string): Promise<Array<Product>>{
+    public async getScan (TableName: string): Promise<JSON>{
         return null;
     }
 
@@ -30,14 +30,14 @@ export class DbMock implements Persistence {
         return true;
     }
 
-    public async get (TableName: string, id: string): Promise<Product>{
-        return new Product({
+    public async get (TableName: string, id: string): Promise<any>{
+        return {
             "id": id,
             "name": "mock product",
             "description": "this is a mock",
             "category": "mock",
             "netPrice": 2.5,
             "tax": 22
-        });
+        };
     }
 }

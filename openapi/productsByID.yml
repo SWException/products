@@ -31,7 +31,7 @@ get:
                       "https://www.tgtourism.tv/wp-content/uploads/2018/03/topolino.jpg",
                     ],
                   category: "casetta",
-                  price: 9.99,
+                  netPrice: 9.99,
                   tax: 22,
                   show: true,
                   showHome: false,
@@ -69,7 +69,7 @@ patch:
       application/json:
         schema:
           $ref: "../schemas/products.json#/editProduct"
-        example: { id: "123VF", price: 8.00 }
+        example: { id: "123VF", netPrice: 8.00 }
   responses:
     200:
       description: "modify successful"

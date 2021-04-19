@@ -31,7 +31,7 @@ export class Dynamo implements Persistence {
     }
 
     public async getScan (TableName: string):
-            Promise<Array<Product>> {
+            Promise<any> {
         const PARAMS = {
             TableName: TableName
         };
@@ -48,7 +48,7 @@ export class Dynamo implements Persistence {
     }
 
     public async get (TableName: string, id: string):
-            Promise<Product> {
+            Promise<any> {
         const PARAMS = {
             Key: {
                 id: id
@@ -65,7 +65,7 @@ export class Dynamo implements Persistence {
     public async getIndexPartition (TableName: string, 
         index: string, partitionKey: string,
         partitionValue: string, sort: string):
-        Promise<Array<Product>> {
+        Promise<any> {
             
         let IndexForward = true;
         if(sort== "DESC") {IndexForward = false;}

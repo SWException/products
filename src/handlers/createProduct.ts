@@ -14,7 +14,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, null, "error during the permissions check")
     }
     const MODEL: Model = Model.createModel();
-    const RES: boolean = await MODEL.createProduct(DATA, TOKEN);
+    const RES: boolean = await MODEL.addProduct(DATA, TOKEN);
 
     console.log(JSON.stringify(RES));
 
