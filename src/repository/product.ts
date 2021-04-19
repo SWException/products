@@ -15,7 +15,7 @@ export class Product {
 
     constructor (product: { [key: string]: any }) {
         this.id = product.id;
-        this.productName = product.name;
+        this.productName = product.productName;
         this.description = product.description;
         this.category = product.category;
         this.netPrice = product.netPrice;

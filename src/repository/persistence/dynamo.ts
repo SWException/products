@@ -41,10 +41,6 @@ export class Dynamo implements Persistence {
         if (DATA.Items == null)
             return null;
         return DATA.Items;
-        /*
-            * Il valore ritornato potrebbe essere null.
-            * Ad esempio se non esiste un carrello per quell'utente
-            */
     }
 
     public async get (TableName: string, id: string):
@@ -57,7 +53,7 @@ export class Dynamo implements Persistence {
             IndexName: "id-index"
         };
 
-        const DATA = await this.DOCUMENT_CLIENT.get(PARAMS).promise();
+        const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return new Product(DATA[0])
     }
