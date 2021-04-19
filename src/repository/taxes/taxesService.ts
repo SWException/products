@@ -5,8 +5,8 @@ export class TaxesService implements Taxes {
     public async getTax (id: string): Promise<any> {
         return await fetch(process.env.SERVICES + `/taxes/${id}`)
             .then(async response => {
-                console.log(response.data);
-                return response.data ? response.data : null;
+                const RESPONSE = response.json();
+                return RESPONSE["data"] ? RESPONSE["data"] : null;
             })
     }
 }
