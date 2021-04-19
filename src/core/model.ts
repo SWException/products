@@ -170,7 +170,7 @@ export class Model {
         const TAX_VALUE = TAX["value"];       
         product.tax=TAX_VALUE;
         //category
-        const CATEGORY=this.CATEGORIES.getCategoryName(product.category);
+        const CATEGORY= await this.CATEGORIES.getCategoryName(product.category);
         product.category = CATEGORY;
         return new Product(product);
 
