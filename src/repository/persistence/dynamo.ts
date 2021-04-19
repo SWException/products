@@ -46,11 +46,12 @@ export class Dynamo implements Persistence {
     public async get (TableName: string, id: string):
             Promise<any> {
         const PARAMS = {
-            Key: {
-                id: id
-            },
             TableName: TableName,
-            IndexName: "id-index"
+            IndexName: "id-index",
+            KeyConditionExpression: 'id = :id',
+            ExpressionAttributeValues: { 
+                ':id': id 
+            } 
         };
 
         const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
