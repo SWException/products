@@ -40,6 +40,7 @@ provider:
     CALLBACK_URL: http://localhost:3000
     PRODUCT_IMG_BUCKET: ${self:custom.imageUploadBucket}
     REGION: ${self:provider.region}
+    SERVICES: ${env:SERVICES}
 
   iam:
     role:
