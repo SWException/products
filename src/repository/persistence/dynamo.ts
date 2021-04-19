@@ -56,7 +56,7 @@ export class Dynamo implements Persistence {
 
         const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
-        return new Product(DATA[0])
+        return DATA.Items[0];
     }
 
     public async getIndexPartition (TableName: string, 
