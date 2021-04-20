@@ -1,6 +1,5 @@
-import { Product } from "../product";
 
-export interface Persistence {
+    export interface Persistence {
     
     getCategoryPrice(category: string, sortValueMin: number, sortValueMax: number):
         Promise<any>;
@@ -10,4 +9,4 @@ export interface Persistence {
     delete (id: string): Promise<boolean>;
     changeStock(id: string, quantity: number): Promise<boolean>;
     get(id: string): Promise<any>;
-}
+    }
