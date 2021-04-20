@@ -17,9 +17,9 @@ export class DbMock implements Persistence {
         "netPrice": 2.5,
         "tax": "2"
     };
-    public async getIndexPartition (index: string, partitionKey: string, partitionValue: string, sort: string):
-        Promise<any>{
-        return index && partitionKey && partitionValue && sort? [this.PRODUCT_1, this.PRODUCT_2] : null
+
+    public async getCategoryPrice(category: string, price: number, sortValueMin: string, sortValueMax: string):
+    Promise<any>{
     }
     
     public async write (data: any): Promise<boolean>{

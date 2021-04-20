@@ -63,7 +63,7 @@ export class Dynamo implements Persistence {
 
     async getCategoryPrice (category: string, price: number,
         sortValueMin: string, sortValueMax: string):
-        Promise<AWS.DynamoDB.DocumentClient.AttributeMap> {
+        Promise<any> {
         let ConditionExpression: string;
         if (sortValueMin && sortValueMax) {
             ConditionExpression = 
