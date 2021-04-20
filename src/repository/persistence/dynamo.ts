@@ -5,6 +5,15 @@ export class Dynamo implements Persistence {
     private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
     private static readonly TABLE_NAME = "products"
 
+    /**
+     * 
+     * @param id id of the product
+     * @param quantity the amount to add or remove from stock (can be negative)
+     */
+    changeStock (id: string, quantity: number): Promise<boolean> {
+        console.log(id, quantity);
+        throw new Error("Method not implemented.");
+    }
 
     /**
          * delete the item with the given id from the db
