@@ -7,14 +7,15 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const PRODUCT_ID = event.pathParameters?.id;
 
     const MODEL: Model = Model.createModel();
-    const PRODUCT: Product = await MODEL.getProduct(PRODUCT_ID);
-
-    console.log(JSON.stringify(PRODUCT));
-
-    if (PRODUCT) {
-        return API_RESPONSES._200(PRODUCT);
+    try {
+        const PRODUCT: Product = await MODEL.getProduct(PRODUCT_ID);
+        console.log(JSON.stringify(PRODUCT));
+        if (PRODUCT) {
+            return API_RESPONSES._200(PRODUCT);
+        }
     }
-    else {
-        return API_RESPONSES._400(null, "error", "prodotto non presente");
+    catch (err){
+        console.log(err.message);
+        return API_RESPONSES._400(null, "error", err.message);   
     }
 }

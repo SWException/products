@@ -1,43 +1,55 @@
 import { Persistence } from "./persistence";
-import { Product } from "../product";
 
 export class DbMock implements Persistence {
-    public async getIndexPartition (TableName: string,
-        index: string, partitionKey: string,
-        partitionValue: string, sort: string):
+    private readonly PRODUCT_1= {
+        "id": "1",
+        "productName": "mock product 1",
+        "description": "this is a mock",
+        "category": "1",
+        "netPrice": 2.5,
+        "tax": "1"
+    };
+    private readonly PRODUCT_2= {
+        "id": "2",
+        "productName": "mock product 2",
+        "description": "this is a mock",
+        "category": "2",
+        "netPrice": 2.5,
+        "tax": "2"
+    };
+    public async getIndexPartition (index: string, partitionKey: string, partitionValue: string, sort: string):
         Promise<any>{
-        
-        return null;
+        return index && partitionKey && partitionValue && sort? [this.PRODUCT_1, this.PRODUCT_2] : null
     }
     
-    public async write (TableName: string, data: any): Promise<boolean>{
-        return true;
+    public async write (data: any): Promise<boolean>{
+        return data? true : false;
     }
     
-    public async update (TableName: string, id: string, data: any): Promise<boolean>{
-        return true;
+    public async update (id: string, data: any): Promise<boolean>{
+        return id && data? true : false;
     }
 
-    public async getScan (TableName: string): Promise<JSON>{
-        return null;
+    public async getScan (): Promise<any>{
+        return [this.PRODUCT_1, this.PRODUCT_2];
     }
 
-    public async delete (TableName: string, id: string): Promise<boolean>{
-        return true;
+    public async delete (id: string): Promise<boolean>{
+        return id? true : false;
     }
 
-    public async changeStock (TableName: string, id: string, quantity: number): Promise<boolean>{
-        return true;
+    public async changeStock (id: string, quantity: number): Promise<boolean>{
+        return id && quantity? true : false;
     }
 
-    public async get (TableName: string, id: string): Promise<any>{
+    public async get (id: string): Promise<any>{
         return {
             "id": id,
-            "name": "mock product",
+            "productName": "mock product",
             "description": "this is a mock",
-            "category": "mock",
+            "category": "1",
             "netPrice": 2.5,
-            "tax": 22
+            "tax": "1"
         };
     }
 }

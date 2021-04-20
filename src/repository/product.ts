@@ -32,11 +32,10 @@ export class Product {
                 }
             
             }
-            else 
-                this.secondaryPhotos=null;
-        }
-        else 
-            this.primaryPhoto=null;
+        }    
+        console.log(this.id, this.productName, this.description, 
+            this.category,this.price,this.secondaryPhotos && this.primaryPhoto && 
+                this.stock && this.show && this.showHome);
     }
 
     // METODI PRIVATI

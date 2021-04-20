@@ -19,7 +19,6 @@ import { CategoriesMock } from "src/repository/categories/categoriesMock";
 export class Model {
     private readonly DATABASE: Persistence;
     private readonly AJV: Ajv = buildAjv();
-    private static readonly TABLE = "products";
     private readonly USERS: Users;
     private readonly TAXES: Taxes;
     private readonly CATEGORIES: Categories;
@@ -45,14 +44,13 @@ export class Model {
          * @returns the product with the given id
          */
     public async getProduct (id: string): Promise<Product> {
-
-        const PRODUCT_DB: any = await this.DATABASE.get(Model.TABLE, id);
+        const PRODUCT_DB: any = await this.DATABASE.get(id);     
+        if (PRODUCT_DB == null) {
+            console.log("Product " + id + " not found");
+            throw new Error("A product with this id doesn't exist");
+        }
         //microservices calls
         const PRODUCT = await this.createProduct(PRODUCT_DB);
-        if (PRODUCT == null) {
-            console.log("Product " + id + " not found");
-            return null;
-        }
         console.log("Product " + id + ": " + JSON.stringify(PRODUCT));
         return PRODUCT;
     }
@@ -63,7 +61,7 @@ export class Model {
         if (!IS_VENDOR){
             throw new Error("invalid token");
         }
-        return this.DATABASE.changeStock(Model.TABLE, id, quantity);
+        return this.DATABASE.changeStock(id, quantity);
     }
 
     /**
@@ -99,11 +97,10 @@ export class Model {
         }
 
         //validate and add to db
-        const VALID = this.AJV.validate("src/products/schema.json#/insertProduct", data);
+        const VALID = this.AJV.validate("schemas/products.json#/insertProduct", data);
         if (VALID) {
             data.id = uuidv4();
-            const RES: Promise<boolean> = this.DATABASE.write(Model.TABLE,
-                JSON.parse(JSON.stringify(data)));
+            const RES: Promise<boolean> = this.DATABASE.write(JSON.parse(JSON.stringify(data)));
             return RES;
         }
         else {
@@ -118,7 +115,7 @@ export class Model {
          * @param DATA data to be updated
          * @returns the result of the query
         */
-    public async updateProduct (PRODUCT_ID: string, DATA: JSON, token: string):
+    public async updateProduct (PRODUCT_ID: string, DATA: {[key:string]: any}, token: string):
         Promise<boolean> {
         //check if the user is vendor
         const IS_VENDOR = await this.USERS.checkVendor(token);
@@ -137,9 +134,9 @@ export class Model {
             DATA['primaryPhoto'] = await s3.uploadImage(DATA['primaryPhoto'], BUCKETNAME);
         }
 
-        const VALID = this.AJV.validate("src/products/schema.json#/editProduct", DATA);
+        const VALID = this.AJV.validate("schemas/products.json#/editProduct", DATA);
         if (VALID) {
-            const PRODUCT = await this.DATABASE.update(Model.TABLE, PRODUCT_ID, DATA);
+            const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
             return PRODUCT;
         }
         else {
@@ -154,12 +151,22 @@ export class Model {
     public async getAllProducts (DATA: JSON): Promise<Array<Product>> {
         console.log(DATA); //dati per filtrare e ordinare
         // TODO: Da aggiungere i filtri e ordinamento 
-        const PRODUCTS_JSON = await this.DATABASE.getScan(Model.TABLE);
+        const PRODUCTS_JSON = await this.DATABASE.getScan();
         const PRODUCTS: Array<Product> = []
         for (let i = 0; i < PRODUCTS_JSON.length; i++) {
             PRODUCTS.push(await this.createProduct(PRODUCTS_JSON[i]));
         }
         return PRODUCTS;
+    }
+
+    public async deleteProduct (PRODUCT_ID: string, token: string):
+    Promise<boolean> {
+    //check if the user is vendor
+        const IS_VENDOR = await this.USERS.checkVendor(token);
+        if (!IS_VENDOR){
+            throw new Error("invalid token");
+        }
+        return await this.DATABASE.delete(PRODUCT_ID);
     }
 
 

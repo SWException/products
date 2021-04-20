@@ -1,52 +1,45 @@
 import * as AWS from "aws-sdk";
 import { Persistence } from "./persistence";
-import { Product } from "../product";
 
 export class Dynamo implements Persistence {
-    private readonly DOCUMENT_CLIENT;
-
-    constructor () {
-        this.DOCUMENT_CLIENT = new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
-    }
+    private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
+    private static readonly TABLE_NAME = "products"
 
     /**
      * 
-     * @param TableName 
      * @param id id of the product
      * @param quantity the amount to add or remove from stock (can be negative)
      */
-    changeStock (TableName: string, id: string, quantity: number): Promise<boolean> {
+    changeStock (id: string, quantity: number): Promise<boolean> {
+        console.log(id, quantity);
         throw new Error("Method not implemented.");
     }
 
     /**
          * delete the item with the given id from the db
-         * @param TableName 
          * @param id 
          */
 
-    public async delete (TableName: string, id: string): Promise<boolean> {
+    public async delete (id: string): Promise<boolean> {
+        console.log(id)
         throw new Error("Method not implemented.");
         //TODO
     }
 
-    public async getScan (TableName: string):
-            Promise<any> {
+    public async getScan (): Promise<any> {
         const PARAMS = {
-            TableName: TableName
+            TableName: Dynamo.TABLE_NAME
         };
-
-        const DATA = await this.DOCUMENT_CLIENT.scan(PARAMS).promise();
+        const DATA = await Dynamo.DOCUMENT_CLIENT.scan(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         if (DATA.Items == null)
             return null;
         return DATA.Items;
     }
 
-    public async get (TableName: string, id: string):
-            Promise<any> {
+    public async get (id: string): Promise<any> {
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             IndexName: "id-index",
             KeyConditionExpression: 'id = :id',
             ExpressionAttributeValues: { 
@@ -54,21 +47,19 @@ export class Dynamo implements Persistence {
             } 
         };
 
-        const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
+        const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items[0];
     }
 
-    public async getIndexPartition (TableName: string, 
-        index: string, partitionKey: string,
-        partitionValue: string, sort: string):
+    public async getIndexPartition (index: string, partitionKey: string, partitionValue: string, sort: string):
         Promise<any> {
             
         let IndexForward = true;
         if(sort== "DESC") {IndexForward = false;}
 
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             IndexName: index,
             KeyConditionExpression: 
                     "#partitionKey= :partitionValue",
@@ -81,12 +72,12 @@ export class Dynamo implements Persistence {
             ScanIndexForward: IndexForward
         };
 
-        const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
+        const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items;
     }
 
-    async getIndexSort (TableName: string, index: string, partitionKey: string,
+    async getIndexSort (index: string, partitionKey: string,
         partitionValue: string, sortKey: string,
         sortValueMin: string, sortValueMax: string):
         Promise<AWS.DynamoDB.DocumentClient.AttributeMap> {
@@ -106,7 +97,7 @@ export class Dynamo implements Persistence {
         }
             
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             IndexName: index,
             KeyConditionExpression: ConditionExpression,
             ExpressionAttributeName:{
@@ -123,21 +114,17 @@ export class Dynamo implements Persistence {
             }
         };
 
-        const DATA = await this.DOCUMENT_CLIENT.query(PARAMS).promise();
+        const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items;
-        /*
-            * Il valore ritornato potrebbe essere null.
-            * Ad esempio se non esiste un carrello per quell'utente
-            */
     }
 
 
-    public async append (TableName: string, field: string, id: string,
+    public async append (field: string, id: string,
         data: { [key: string]: any }): Promise<boolean> {
 
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             Key: {
                 id: id
             },
@@ -149,29 +136,28 @@ export class Dynamo implements Persistence {
                 ":vals": data
             }
         }
-        const DATA = await this.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
+        const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
             () => { return false; }
         );
         return (DATA) ? true : false;
     }
 
-    public async write (TableName: string, 
-        data: { [key: string]: any }): Promise<boolean> {
+    public async write (data: { [key: string]: any }): Promise<boolean> {
 
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             Key: {
                 id: data.id
             },
             Item: data
         };
-        const DATA = await this.DOCUMENT_CLIENT.put(PARAMS).promise().catch(
+        const DATA = await Dynamo.DOCUMENT_CLIENT.put(PARAMS).promise().catch(
             () => { return false; }
         );
         return DATA ? true : false;
     }
 
-    public async update (TableName: string, id: string, data: JSON): Promise<boolean>{
+    public async update (id: string, data: JSON): Promise<boolean>{
         const VALUES = {};
         let expression = "SET ";
         let first = true;
@@ -191,7 +177,7 @@ export class Dynamo implements Persistence {
         });
 
         const PARAMS = {
-            TableName: TableName,
+            TableName: Dynamo.TABLE_NAME,
             Key: {
                 id: id
             },
@@ -200,7 +186,7 @@ export class Dynamo implements Persistence {
         }
         console.log(PARAMS);
 
-        const DATA = await this.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
+        const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
             (err) => { return err; }
         );
         return DATA;
