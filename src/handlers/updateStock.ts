@@ -17,13 +17,15 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     //check for the id of the product 
     const PRODUCT_ID: string = event.pathParameters?.id;
     if (!PRODUCT_ID) {
-        return API_RESPONSES._400(null, null, "id prodotto non presente");
+        return API_RESPONSES._400(null, "error", "id prodotto non presente nella richiesta");
     }
     try{
         const MODEL: Model = Model.createModel();
         const RES = await MODEL.changeStock(PRODUCT_ID, QUANTITY, TOKEN);
         console.log(JSON.stringify(RES));
-        return API_RESPONSES._200(JSON.parse(JSON.stringify(RES)));
+        if(RES)
+            return API_RESPONSES._200(JSON.parse(JSON.stringify(RES)));
+        return API_RESPONSES._400(null,"error", "couldn't update the quantity");
     }
     catch(err) {
         console.log(err.message);

@@ -20,7 +20,7 @@ export class DbMock implements Persistence {
 
     public async getCategoryPrice (category: string, sortValueMin: number, sortValueMax: number):
     Promise<any>{
-        return category && sortValueMin && sortValueMax? true : false;
+        return category && sortValueMin && sortValueMax? [this.PRODUCT_1, this.PRODUCT_2] : false;
     }
     
     public async write (data: any): Promise<boolean>{
@@ -34,10 +34,6 @@ export class DbMock implements Persistence {
 
     public async delete (id: string): Promise<boolean>{
         return id? true : false;
-    }
-
-    public async changeStock (id: string, quantity: number): Promise<boolean>{
-        return id && quantity? true : false;
     }
 
     public async get (id: string): Promise<any>{

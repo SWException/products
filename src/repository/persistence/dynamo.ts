@@ -22,7 +22,7 @@ export class Dynamo implements Persistence {
         await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise().catch(
             (err) => { return err; }
         );
-        return true;      
+        return true;  
     }
 
    
