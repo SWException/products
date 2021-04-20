@@ -51,8 +51,7 @@ export class Dynamo implements Persistence {
         return DATA.Items[0];
     }
 
-    async getCategoryPrice (category: string, price: number,
-        sortValueMin: string, sortValueMax: string):
+    async getCategoryPrice (category: string, sortValueMin: number, sortValueMax: number):
         Promise<any> {
         let ConditionExpression: string;
         if (sortValueMin && sortValueMax) {
@@ -80,7 +79,6 @@ export class Dynamo implements Persistence {
             },
             ExpressionAttributeValues:{
                 ":partitionValue": category,
-                ":sortValue": price,
                 ":sortValueMin": sortValueMin,
                 ":sortValueMax": sortValueMax,
                 

@@ -145,20 +145,6 @@ export class Model {
         }
     }
 
-
-    // TODO: per ora ho fatto una cosa semplice,
-    //poi è il caso di creare tanti Product e ritornare Array<Product>?
-    public async getAllProducts (DATA: JSON): Promise<Array<Product>> {
-        console.log(DATA); //dati per filtrare e ordinare
-        // TODO: Da aggiungere i filtri e ordinamento 
-        const PRODUCTS_JSON = await this.DATABASE.getScan();
-        const PRODUCTS: Array<Product> = []
-        for (let i = 0; i < PRODUCTS_JSON.length; i++) {
-            PRODUCTS.push(await this.createProduct(PRODUCTS_JSON[i]));
-        }
-        return PRODUCTS;
-    }
-
     public async deleteProduct (PRODUCT_ID: string, token: string):
     Promise<boolean> {
     //check if the user is vendor
