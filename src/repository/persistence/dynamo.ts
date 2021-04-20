@@ -6,21 +6,11 @@ export class Dynamo implements Persistence {
     private static readonly TABLE_NAME = "products"
 
     /**
-     * 
-     * @param id id of the product
-     * @param quantity the amount to add or remove from stock (can be negative)
-     */
-    changeStock (id: string, quantity: number): Promise<boolean> {
-        console.log(id, quantity);
-        throw new Error("Method not implemented.");
-    }
-
-    /**
          * delete the item with the given id from the db
          * @param id 
          */
 
-     public async delete (id: string): Promise<boolean> {
+    public async delete (id: string): Promise<boolean> {
         const PARAMS = {
             Key: {
                 id: id
@@ -29,10 +19,10 @@ export class Dynamo implements Persistence {
             IndexName: "id-index"
         };
 
-       await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise().catch(
+        await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise().catch(
             (err) => { return err; }
         );
-        return true;;      
+        return true;      
     }
 
    

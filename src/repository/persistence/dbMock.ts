@@ -18,7 +18,7 @@ export class DbMock implements Persistence {
         "tax": "2"
     };
 
-    public async getCategoryPrice(category: string, sortValueMin: number, sortValueMax: number):
+    public async getCategoryPrice (category: string, sortValueMin: number, sortValueMax: number):
     Promise<any>{
         return category && sortValueMin && sortValueMax? true : false;
     }

@@ -61,7 +61,9 @@ export class Model {
         if (!IS_VENDOR){
             throw new Error("invalid token");
         }
-        return this.DATABASE.changeStock(id, quantity);
+        const PRODUCT= await this.DATABASE.get(id);
+        PRODUCT.stock = PRODUCT.stock + quantity;
+        return await  this.DATABASE.update(id, PRODUCT);
     }
 
     /**
@@ -153,6 +155,10 @@ export class Model {
             throw new Error("invalid token");
         }
         return await this.DATABASE.delete(PRODUCT_ID);
+    }
+
+    public async getProducts (category: string, minPrice: number, maxPrice: number): Promise<any>{
+        return await this.DATABASE.getCategoryPrice(category, minPrice,maxPrice);
     }
 
 

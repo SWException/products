@@ -9,7 +9,7 @@ export const API_RESPONSES = {
         message?: string) => response(400, status, data, message)
 }
 
-// c'è export perché attualmente ci sono dei test che testano direttamente questa funzione in apiResponses.test.ts. Per togliere l'export bisogna rivedere i test
+// c'è export perché attualmente ci sono dei test che testano direttamente questa funzione in apiResponses.test.ts.
 export function response (statusCode: number, 
     status: string,
     data: { [key: string]: any },

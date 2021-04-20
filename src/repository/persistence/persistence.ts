@@ -1,5 +1,5 @@
 
-    export interface Persistence {
+export interface Persistence {
     
     getCategoryPrice(category: string, sortValueMin: number, sortValueMax: number):
         Promise<any>;
