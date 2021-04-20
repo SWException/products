@@ -158,7 +158,19 @@ export class Model {
     }
 
     public async getProducts (category: string, minPrice: number, maxPrice: number): Promise<any>{
-        return await this.DATABASE.getCategoryPrice(category, minPrice,maxPrice);
+        const PRODUCTS_DB = await this.DATABASE.getCategoryPrice(category, minPrice,maxPrice);
+        if(!PRODUCTS_DB)
+            throw new Error("error while retrieving products from db")
+        let PRODUCTS: {[key: string]: any};
+        //microservices calls
+        for(let i =0; i<PRODUCTS_DB.length; i++){
+            const PRODUCT= await this.createProduct(PRODUCTS_DB[i]);
+            console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
+            PRODUCTS.push(PRODUCT);
+        }
+        return PRODUCTS;
+
+
     }
 
 

@@ -58,7 +58,6 @@ functions:
           path: /products
           method: POST
           cors: true
-
   updateProduct:
     handler: "src/handlers/updateProduct.HANDLER"
     events:
@@ -86,6 +85,13 @@ functions:
       - http:
           path: /products/stock/{id}
           method: PATCH
+          cors: true
+  deleteProduct:
+    handler: "src/handlers/deleteProduct.HANDLER"
+    events:
+      - http:
+          path: /products/{id}
+          method: DELETE
           cors: true
 
 resources:

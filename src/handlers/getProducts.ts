@@ -10,7 +10,14 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     if (CATEGORY && MINPRICE && MAXPRICE) {
         console.log(CATEGORY, MINPRICE, MAXPRICE);
         const MODEL: Model = Model.createModel();
-        return API_RESPONSES._200(await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE));
+        try{
+            const PRODUCTS= await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE);
+            return API_RESPONSES._200(PRODUCTS);
+        }
+        catch(err){
+            console.log(err.message);
+            return API_RESPONSES._400(null, "error", err.message);
+        }
     }
     else 
         return API_RESPONSES._400(null, "error", "missing query parameters")
