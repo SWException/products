@@ -7,8 +7,6 @@ export interface Persistence {
 
     write (data: any): Promise<boolean>;   
     update (id: string, data: any): Promise<boolean>;
-    getScan (): Promise<any>;
     delete (id: string): Promise<boolean>;
-    changeStock(id: string, quantity: number): Promise<boolean>;
     get(id: string): Promise<any>;
 }

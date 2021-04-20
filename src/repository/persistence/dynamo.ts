@@ -5,15 +5,6 @@ export class Dynamo implements Persistence {
     private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
     private static readonly TABLE_NAME = "products"
 
-    /**
-     * 
-     * @param id id of the product
-     * @param quantity the amount to add or remove from stock (can be negative)
-     */
-    changeStock (id: string, quantity: number): Promise<boolean> {
-        console.log(id, quantity);
-        throw new Error("Method not implemented.");
-    }
 
     /**
          * delete the item with the given id from the db
@@ -35,17 +26,7 @@ export class Dynamo implements Persistence {
         return true;;      
     }
 
-    public async getScan (): Promise<any> {
-        const PARAMS = {
-            TableName: Dynamo.TABLE_NAME
-        };
-        const DATA = await Dynamo.DOCUMENT_CLIENT.scan(PARAMS).promise();
-        console.log("Data from DB: " + JSON.stringify(DATA));
-        if (DATA.Items == null)
-            return null;
-        return DATA.Items;
-    }
-
+   
     public async get (id: string): Promise<any> {
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
@@ -100,30 +81,6 @@ export class Dynamo implements Persistence {
         const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items;
-    }
-
-
-
-    public async append (field: string, id: string,
-        data: { [key: string]: any }): Promise<boolean> {
-
-        const PARAMS = {
-            TableName: Dynamo.TABLE_NAME,
-            Key: {
-                id: id
-            },
-            UpdateExpression: "SET #c = list_append(#c, :vals)",
-            ExpressionAttributeNames: {
-                "#c": field
-            },
-            ExpressionAttributeValues: {
-                ":vals": data
-            }
-        }
-        const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
-            () => { return false; }
-        );
-        return (DATA) ? true : false;
     }
 
     public async write (data: { [key: string]: any }): Promise<boolean> {
