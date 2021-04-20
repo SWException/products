@@ -39,10 +39,6 @@ export class DbMock implements Persistence {
         return id? true : false;
     }
 
-    public async changeStock (id: string, quantity: number): Promise<boolean>{
-        return id && quantity? true : false;
-    }
-
     public async get (id: string): Promise<any>{
         return {
             "id": id,
