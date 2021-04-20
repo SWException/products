@@ -1,4 +1,4 @@
-import { Users } from "./Users";
+import { Users } from "./users";
 import fetch from "node-fetch";
 
 export class UsersService implements Users {
