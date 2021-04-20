@@ -31,9 +31,6 @@ export class DbMock implements Persistence {
         return id && data? true : false;
     }
 
-    public async getScan (): Promise<any>{
-        return [this.PRODUCT_1, this.PRODUCT_2];
-    }
 
     public async delete (id: string): Promise<boolean>{
         return id? true : false;
