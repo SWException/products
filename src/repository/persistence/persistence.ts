@@ -2,7 +2,7 @@ import { Product } from "../product";
 
 export interface Persistence {
     
-    getIndexPartition(index: string, partitionKey: string, partitionValue: string, sort: string):
+    getCategoryPrice(category: string, price: number, sortValueMin: string, sortValueMax: string):
         Promise<any>;
 
     write (data: any): Promise<boolean>;   

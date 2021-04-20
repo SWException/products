@@ -20,10 +20,19 @@ export class Dynamo implements Persistence {
          * @param id 
          */
 
-    public async delete (id: string): Promise<boolean> {
-        console.log(id)
-        throw new Error("Method not implemented.");
-        //TODO
+     public async delete (id: string): Promise<boolean> {
+        const PARAMS = {
+            Key: {
+                id: id
+            },
+            TableName: Dynamo.TABLE_NAME,
+            IndexName: "id-index"
+        };
+
+       await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise().catch(
+            (err) => { return err; }
+        );
+        return true;;      
     }
 
     public async getScan (): Promise<any> {
@@ -52,33 +61,7 @@ export class Dynamo implements Persistence {
         return DATA.Items[0];
     }
 
-    public async getIndexPartition (index: string, partitionKey: string, partitionValue: string, sort: string):
-        Promise<any> {
-            
-        let IndexForward = true;
-        if(sort== "DESC") {IndexForward = false;}
-
-        const PARAMS = {
-            TableName: Dynamo.TABLE_NAME,
-            IndexName: index,
-            KeyConditionExpression: 
-                    "#partitionKey= :partitionValue",
-            ExpressionAttributeNames:{
-                "#partitionKey": partitionKey
-            },
-            ExpressionAttributeValues:{
-                ":partitionValue": partitionValue
-            },
-            ScanIndexForward: IndexForward
-        };
-
-        const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
-        console.log("Data from DB: " + JSON.stringify(DATA));
-        return DATA.Items;
-    }
-
-    async getIndexSort (index: string, partitionKey: string,
-        partitionValue: string, sortKey: string,
+    async getCategoryPrice (category: string, price: number,
         sortValueMin: string, sortValueMax: string):
         Promise<AWS.DynamoDB.DocumentClient.AttributeMap> {
         let ConditionExpression: string;
@@ -98,16 +81,16 @@ export class Dynamo implements Persistence {
             
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
-            IndexName: index,
+            IndexName: "categoryPrice",
             KeyConditionExpression: ConditionExpression,
             ExpressionAttributeName:{
-                "#partitionKey": partitionKey,
-                "#sortKey": sortKey,
+                "#partitionKey": "category",
+                "#sortKey": "price",
             
             },
             ExpressionAttributeValues:{
-                ":partitionValue": partitionValue,
-                ":sortValue": sortValueMin,
+                ":partitionValue": category,
+                ":sortValue": price,
                 ":sortValueMin": sortValueMin,
                 ":sortValueMax": sortValueMax,
                 
@@ -118,6 +101,7 @@ export class Dynamo implements Persistence {
         console.log("Data from DB: " + JSON.stringify(DATA));
         return DATA.Items;
     }
+
 
 
     public async append (field: string, id: string,
