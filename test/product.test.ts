@@ -35,9 +35,9 @@ test('insert product in the db', async () => {
     expect(RES).toBe(true);
 });
 
-test('delete product from database', async () => {
-    const RES = (await MODEL.deleteProduct("1", "token"));
-    expect(RES).toBe(true);
+test('get products from database', async () => {
+    const RES = (await MODEL.getProducts("1", 3, 10));
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
 test('update product in the database', async () => {
@@ -49,6 +49,16 @@ test('update product in the database', async () => {
         "netPrice": 2.5,
         "tax": "1"
     } ,"token"));
+    expect(RES).toBe(true);
+});
+
+test('delete product in the database', async () => {
+    const RES = (await MODEL.deleteProduct("1", "token"));
+    expect(RES).toBe(true);
+});
+
+test('change stock of a product', async () => {
+    const RES = (await MODEL.changeStock("1", 3 ,"token"));
     expect(RES).toBe(true);
 });
 

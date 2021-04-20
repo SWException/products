@@ -161,7 +161,7 @@ export class Model {
         const PRODUCTS_DB = await this.DATABASE.getCategoryPrice(category, minPrice,maxPrice);
         if(!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
-        let PRODUCTS: {[key: string]: any};
+        const PRODUCTS = [];
         //microservices calls
         for(let i =0; i<PRODUCTS_DB.length; i++){
             const PRODUCT= await this.createProduct(PRODUCTS_DB[i]);
