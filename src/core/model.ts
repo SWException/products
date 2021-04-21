@@ -63,7 +63,8 @@ export class Model {
         }
         const PRODUCT= await this.DATABASE.get(id);
         PRODUCT.stock = PRODUCT.stock + quantity;
-        return await  this.DATABASE.update(id, PRODUCT);
+        const TO_UPDATE = {"stock": PRODUCT.stock}
+        return await  this.DATABASE.update(id, TO_UPDATE);
     }
 
     /**
