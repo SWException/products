@@ -87,7 +87,9 @@ export class Dynamo implements Persistence {
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
             Key: {
+                category: data.category,
                 id: data.id
+                
             },
             Item: data
         };
