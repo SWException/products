@@ -43,19 +43,21 @@ export class Dynamo implements Persistence {
 
     public async getCategoryPrice (category: string, sortValueMin: number, sortValueMax: number):
         Promise<any> {
+            
         let ConditionExpression: string;
+
         if (sortValueMin && sortValueMax) {
             ConditionExpression = 
-                "#partitionKey= :partitionValue AND "+
-                "#sortKey BETWEEN :sortValueMin AND :sortValueMax";
+                "category= :partitionValue AND "+
+                "netPrice BETWEEN :sortValueMin AND :sortValueMax";
         }
         else if(sortValueMax) {
             ConditionExpression =
-                "#partitionKey= :partitionValue AND #sortKey < :sortValueMax";
+                "category= :partitionValue AND netPrice < :sortValueMax";
         }
         else if(sortValueMin) {
             ConditionExpression =
-                "#partitionKey= :partitionValue AND #sortKey > :sortValueMin";
+                "category= :partitionValue AND netPrice > :sortValueMin";
         }
             
         const PARAMS = {
@@ -63,9 +65,9 @@ export class Dynamo implements Persistence {
             IndexName: "categoryPrice",
             KeyConditionExpression: ConditionExpression,
             ExpressionAttributeName:{
-                "#partitionKey": "category",
+                "#partitionKey" : "category",
                 "#sortKey": "price",
-            
+                
             },
             ExpressionAttributeValues:{
                 ":partitionValue": category,
@@ -114,9 +116,12 @@ export class Dynamo implements Persistence {
             }
         });
 
+        let product = await this.get(id);
+
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
             Key: {
+                category: product["category"],
                 id: id
             },
             UpdateExpression: expression,
@@ -125,8 +130,8 @@ export class Dynamo implements Persistence {
         console.log(PARAMS);
 
         const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
-            (err) => { return err; }
+            (err) => { console.log(err); return false;}
         );
-        return DATA;
+        return DATA ? true : false;
     }
 }
