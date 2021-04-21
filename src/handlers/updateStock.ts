@@ -9,7 +9,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, "error", "missing authentication token");
     }
     const DATA = JSON.parse(event?.body);
-    const QUANTITY = DATA.quantity as number;
+    const QUANTITY: number = DATA.quantity;
     console.log(QUANTITY);
     if (!QUANTITY) {
         return API_RESPONSES._400(null, "error", "a quantity must be provided")
