@@ -11,8 +11,10 @@ export class Dynamo implements Persistence {
          */
 
     public async delete (id: string): Promise<boolean> {
+        const PRODUCT = await this.get(id);
         const PARAMS = {
             Key: {
+                category: PRODUCT.category,
                 id: id
             },
             TableName: Dynamo.TABLE_NAME,

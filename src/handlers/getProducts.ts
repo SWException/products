@@ -4,9 +4,9 @@ import API_RESPONSES from "src/utils/apiResponses"
 
 export const HANDLER: APIGatewayProxyHandler = async (event) => {
     // filtri o ordinamento o pagina
-    const CATEGORY = event.queryStringParameters.category;
-    const MINPRICE: number = +event.queryStringParameters.minPrice;
-    const MAXPRICE: number = +event.queryStringParameters.maxPrice;
+    const CATEGORY = event?.queryStringParameters?.category;
+    const MINPRICE: number = +event?.queryStringParameters?.minPrice;
+    const MAXPRICE: number = +event?.queryStringParameters?.maxPrice;
     if (CATEGORY && MINPRICE && MAXPRICE) {
         console.log(CATEGORY, MINPRICE, MAXPRICE);
         const MODEL: Model = Model.createModel();

@@ -11,16 +11,16 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     }
     const ID = event.pathParameters?.id;
     if (!ID) {
-        return API_RESPONSES._400(null, null, "missing product id")
+        return API_RESPONSES._400(null, "error", "missing product id")
     }
     const MODEL: Model = Model.createModel();
     try{
         const RES: boolean = await MODEL.deleteProduct(ID, TOKEN);
         console.log(JSON.stringify(RES));
         if (RES)
-            return API_RESPONSES._200(null);
+            return API_RESPONSES._200(null, "success", "product deleted");
         else
-            return API_RESPONSES._400(null, null, "error while deleting the product");
+            return API_RESPONSES._400(null, "error", "error while deleting the product");
     }
     catch(err) {
         console.log(err.message);
