@@ -35,7 +35,7 @@ test('update product in database', async () => {
 
 test('add product to database', async () => {
     const RES = (await DYNAMO.write({
-        "id": "2",
+        "id": "-1",
         "productName": "mock product",
         "description": "this is a mock",
         "category": "1",
@@ -46,7 +46,7 @@ test('add product to database', async () => {
 });
 
 test('remove product to database', async () => {
-    const RES = (await DYNAMO.delete("2"));
+    const RES = (await DYNAMO.delete("-1"));
     expect(RES).toBe(true);
 });
 
