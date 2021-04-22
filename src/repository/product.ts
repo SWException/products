@@ -1,7 +1,7 @@
 export class Product {
     // CAMPI DATI
     private readonly id: string;
-    private readonly productName: string;
+    private readonly name: string;
     private readonly description: string;
     private readonly category: string;
     private readonly price: number;
@@ -15,7 +15,7 @@ export class Product {
 
     constructor (product: { [key: string]: any }) {
         this.id = product.id;
-        this.productName = product.productName;
+        this.name = product.productName;
         this.description = product.description;
         this.category = product.category;
         this.netPrice = product.netPrice;
@@ -30,10 +30,9 @@ export class Product {
                 for (let i = 0; i < product.secondaryPhotos.length; i++) {
                     this.secondaryPhotos[i] = product.secondaryPhotos[i];
                 }
-            
             }
         }    
-        console.log(this.id, this.productName, this.description, 
+        console.log(this.id, this.name, this.description, 
             this.category,this.price,this.secondaryPhotos && this.primaryPhoto && 
                 this.stock && this.show && this.showHome);
     }
