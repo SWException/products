@@ -43,33 +43,34 @@ export class Dynamo implements Persistence {
         return DATA.Items[0];
     }
 
-    public async getCategoryPrice (category: string, sortValueMin: number, sortValueMax: number):
+    public async getProductsByCategory (category: string, sortValueMin: number, sortValueMax: number):
         Promise<any> {
-            
-        let ConditionExpression: string = null;
+        let ConditionExpression: string = "category = :partitionValue";
+        let AttributeValues = {
+            ":partitionValue": category
+        };
 
-        if (sortValueMin && sortValueMax) {
-            ConditionExpression = 
-                "category = :partitionValue AND netPrice BETWEEN :sortValueMin AND :sortValueMax";
+        if (sortValueMax != null && sortValueMin != null) {
+            ConditionExpression += " AND netPrice BETWEEN :sortValueMin AND :sortValueMax";
+            AttributeValues[":sortValueMax"] = sortValueMax;
+            AttributeValues[":sortValueMin"] = sortValueMin;
         }
-        else if(sortValueMax) {
-            ConditionExpression =
-                "category = :partitionValue AND netPrice < :sortValueMax";
+        else {
+            if (sortValueMax != null) {
+                ConditionExpression += " AND netPrice < :sortValueMax";
+                AttributeValues[":sortValueMax"] = sortValueMax;
+            }
+            if (sortValueMin != null) {
+                ConditionExpression += " AND netPrice > :sortValueMin";
+                AttributeValues[":sortValueMin"] = sortValueMin;
+            }
         }
-        else if(sortValueMin) {
-            ConditionExpression =
-                "category = :partitionValue AND netPrice > :sortValueMin";
-        }
-            
+
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
             IndexName: "categoryPrice",
             KeyConditionExpression: ConditionExpression,
-            ExpressionAttributeValues: {
-                ":partitionValue": category,
-                ":sortValueMin": sortValueMin,
-                ":sortValueMax": sortValueMax,
-            }
+            ExpressionAttributeValues: AttributeValues
         };
 
         const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
@@ -77,8 +78,18 @@ export class Dynamo implements Persistence {
         return DATA.Items;
     }
 
-    public async write (data: { [key: string]: any }): Promise<boolean> {
+    public async getProductsHome (): Promise<any> {
+        //TODO: Da fare che ritorna solo quelli indicati come da visualizzare in home. Per ora li torna tutti
+        const PARAMS = {
+            TableName: Dynamo.TABLE_NAME
+        };
 
+        const DATA = await Dynamo.DOCUMENT_CLIENT.scan(PARAMS).promise();
+        console.log("Data from DB: " + JSON.stringify(DATA));
+        return DATA.Items;
+    }
+
+    public async write (data: { [key: string]: any }): Promise<boolean> {
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
             Key: {

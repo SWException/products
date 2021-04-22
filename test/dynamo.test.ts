@@ -20,7 +20,7 @@ test('get product from database', async () => {
 });
 
 test('get products from database', async () => {
-    const RES = (await DYNAMO.getCategoryPrice("1", 2, 10));
+    const RES = (await DYNAMO.getProductsByCategory("1", 2, 10));
     expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 

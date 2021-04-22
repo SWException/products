@@ -159,7 +159,7 @@ export class Model {
     }
 
     public async getProducts (category: string, minPrice: number, maxPrice: number): Promise<any>{
-        const PRODUCTS_DB = await this.DATABASE.getCategoryPrice(category, minPrice,maxPrice);
+        const PRODUCTS_DB = await this.DATABASE.getProductsByCategory(category, minPrice, maxPrice);
         if(!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
@@ -170,10 +170,21 @@ export class Model {
             PRODUCTS.push(PRODUCT);
         }
         return PRODUCTS;
-
-
     }
 
+    public async getHomeProducts(): Promise<any>{
+        const PRODUCTS_DB = await this.DATABASE.getProductsHome();
+        if(!PRODUCTS_DB)
+            throw new Error("error while retrieving products from db")
+        const PRODUCTS = [];
+        //microservices calls
+        for(let i =0; i<PRODUCTS_DB.length; i++){
+            const PRODUCT= await this.createProduct(PRODUCTS_DB[i]);
+            console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
+            PRODUCTS.push(PRODUCT);
+        }
+        return PRODUCTS;
+    }
 
     //PRIVATE METHODS
     private async createProduct (product: any): Promise<Product> {
@@ -185,6 +196,5 @@ export class Model {
         const CATEGORY= await this.CATEGORIES.getCategoryName(product.category);
         product.category = CATEGORY;
         return new Product(product);
-
     }
 }
