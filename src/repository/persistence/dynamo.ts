@@ -50,17 +50,17 @@ export class Dynamo implements Persistence {
             ":partitionValue": category
         };
 
-        if (sortValueMax != null && sortValueMin != null) {
+        if (!isNaN(sortValueMax) && !isNaN(sortValueMin)) {
             ConditionExpression += " AND netPrice BETWEEN :sortValueMin AND :sortValueMax";
             AttributeValues[":sortValueMax"] = sortValueMax;
             AttributeValues[":sortValueMin"] = sortValueMin;
         }
         else {
-            if (sortValueMax != null) {
+            if (!isNaN(sortValueMax)) {
                 ConditionExpression += " AND netPrice < :sortValueMax";
                 AttributeValues[":sortValueMax"] = sortValueMax;
             }
-            if (sortValueMin != null) {
+            else if (!isNaN(sortValueMin)) {
                 ConditionExpression += " AND netPrice > :sortValueMin";
                 AttributeValues[":sortValueMin"] = sortValueMin;
             }
@@ -72,6 +72,7 @@ export class Dynamo implements Persistence {
             KeyConditionExpression: ConditionExpression,
             ExpressionAttributeValues: AttributeValues
         };
+        console.log("PARAMS getProductsByCategory: ", PARAMS);
 
         const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
         console.log("Data from DB: " + JSON.stringify(DATA));
