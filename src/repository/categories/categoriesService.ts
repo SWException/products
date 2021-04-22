@@ -6,7 +6,7 @@ export class CategoriesService implements Categories {
         const RESPONSE= await fetch(process.env.SERVICES + `/categories/${id}`)
         const BODY= await RESPONSE.json();
         console.log(BODY);
-        return BODY.data.categoryName? BODY.data.categoryName : null;
+        return BODY.data.name? BODY.data.name : null;
     }
     public async getCategories (): Promise<JSON> {
         return await fetch(process.env.SERVICES + `/categories/`)
