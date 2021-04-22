@@ -179,7 +179,7 @@ export class Model {
         const PRODUCTS = [];
         //microservices calls
         for(let i =0; i<PRODUCTS_DB.length; i++){
-            const PRODUCT= await this.createProduct(PRODUCTS_DB[i]);
+            const PRODUCT = await this.createProduct(PRODUCTS_DB[i]);
             console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
             PRODUCTS.push(PRODUCT);
         }
@@ -191,7 +191,7 @@ export class Model {
         //tax
         const TAX = await this.TAXES.getTax(product.tax);
         const TAX_VALUE = TAX["value"];       
-        product.tax=TAX_VALUE;
+        product.tax = TAX_VALUE;
         //category
         const CATEGORY= await this.CATEGORIES.getCategoryName(product.category);
         product.category = CATEGORY;
