@@ -40,6 +40,12 @@ test('get products from database', async () => {
     expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
+test('get products by name from database', async () => {
+    const RES = (await MODEL.getProductsByName("paperino"));
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
+});
+
+
 test('update product in the database', async () => {
     const RES = (await MODEL.updateProduct("1", {
         "id": "1",
@@ -61,11 +67,3 @@ test('change stock of a product', async () => {
     const RES = (await MODEL.changeStock("1", 3 ,"token"));
     expect(RES).toBe(true);
 });
-
-/*
-test('get all products from database', async () => {
-    const RES = (await Product.buildAllProduct(null));
-    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
-});
-
- */

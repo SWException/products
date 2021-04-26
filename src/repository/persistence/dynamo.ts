@@ -5,6 +5,11 @@ export class Dynamo implements Persistence {
     private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
     private static readonly TABLE_NAME = "products"
 
+    public async getProductsByName (name: string): Promise<any> {
+        //  TODO: l'implementazione è triviale e lasciata al lettore
+        throw new Error('Method not implemented'+ name);
+    }
+
     /**
          * delete the item with the given id from the db
          * @param id 
@@ -45,7 +50,7 @@ export class Dynamo implements Persistence {
 
     public async getProductsByCategory (category: string, sortValueMin: number, sortValueMax: number):
         Promise<any> {
-        let ConditionExpression: string = "category = :partitionValue";
+        let ConditionExpression = "category = :partitionValue";
         let AttributeValues = {
             ":partitionValue": category
         };
@@ -125,12 +130,12 @@ export class Dynamo implements Persistence {
             }
         });
 
-        let product = await this.get(id);
+        const PRODUCT = await this.get(id);
 
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
             Key: {
-                category: product["category"],
+                category: PRODUCT["category"],
                 id: id
             },
             UpdateExpression: expression,

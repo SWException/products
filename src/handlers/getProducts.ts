@@ -7,10 +7,22 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const CATEGORY = event?.queryStringParameters?.category;
     const MINPRICE: number = +event?.queryStringParameters?.minPrice;
     const MAXPRICE: number = +event?.queryStringParameters?.maxPrice;
+    const NAME: string = event?.queryStringParameters?.name;
+
     const MODEL: Model = Model.createModel();
     if (CATEGORY) {
         console.log(CATEGORY, MINPRICE, MAXPRICE);
         return await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE)
+            .then((PRODUCTS) => {
+                return API_RESPONSES._200(PRODUCTS);
+            })
+            .catch((err) => {
+                console.log(err.message);
+                return API_RESPONSES._400(null, "error", err.message);
+            });
+    }
+    else if (NAME) {
+        return await MODEL.getProductsByName(NAME)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })

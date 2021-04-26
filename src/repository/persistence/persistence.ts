@@ -1,5 +1,6 @@
 
 export interface Persistence {
+    getProductsByName (name: string): Promise<any>
     getProductsHome(): Promise<any>;
     getProductsByCategory(category: string, sortValueMin: number, sortValueMax: number):
         Promise<any>;
