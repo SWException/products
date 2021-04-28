@@ -60,7 +60,12 @@ test('error insert product', async () => {
         .rejects.toThrow(Error);
 });
 
-test('get products', async () => {
+test('get home products', async () => {
+    const RES = await MODEL.getHomeProducts();
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
+});
+
+test('get products by category', async () => {
     let res = await MODEL.getProducts("-1", 3, 10, null);
     expect(res).toMatchSchema(PRODUCTS_SCHEMA);
     res = await MODEL.getProducts("-1", 3, 10, "desc");
@@ -78,7 +83,7 @@ test('get products', async () => {
 });
 
 test('error get products', async () => {
-    await expect(MODEL.getProducts(null, 3, 10, null))
+    await expect(MODEL.getProducts(null, 3, 10, "asc"))
         .rejects.toThrow(Error);
 });
 
