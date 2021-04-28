@@ -68,17 +68,17 @@ export class Dynamo implements Persistence {
             ":partitionValue": category
         };
 
-        if (!isNaN(sortValueMax) && !isNaN(sortValueMin)) {
+        if ((!isNaN(sortValueMax) || sortValueMax === null) && (!isNaN(sortValueMin) || sortValueMin === null)) {
             ConditionExpression += " AND netPrice BETWEEN :sortValueMin AND :sortValueMax";
             AttributeValues[":sortValueMax"] = sortValueMax;
             AttributeValues[":sortValueMin"] = sortValueMin;
         }
         else {
-            if (!isNaN(sortValueMax)) {
+            if (!isNaN(sortValueMax) || sortValueMax === null) {
                 ConditionExpression += " AND netPrice < :sortValueMax";
                 AttributeValues[":sortValueMax"] = sortValueMax;
             }
-            else if (!isNaN(sortValueMin)) {
+            else if (!isNaN(sortValueMin) || sortValueMin === null) {
                 ConditionExpression += " AND netPrice > :sortValueMin";
                 AttributeValues[":sortValueMin"] = sortValueMin;
             }

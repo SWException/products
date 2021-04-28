@@ -31,22 +31,22 @@ test('get product from database', async () => {
     expect(RES).toMatchSchema(PRODUCT_SCHEMA);
 });
 
-test('get product by name from database', async () => {
+test('get products by name from database', async () => {
     const RES = (await DYNAMO.getProductsByName("mock"));
-    expect(RES).toMatchSchema(PRODUCT_SCHEMA);
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
 test('get home products from database', async () => {
     const RES = (await DYNAMO.getProductsHome());
-    expect(RES).toMatchSchema(PRODUCT_SCHEMA);
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
 test('get products from database', async () => {
     const RES = (await DYNAMO.getProductsByCategory("-1", 2, 10));
     expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
-    const RES_1 = (await DYNAMO.getProductsByCategory("-1", null, 10, true));
+    const RES_1 = (await DYNAMO.getProductsByCategory("-1", NaN, 10, true));
     expect(RES_1).toMatchSchema(PRODUCTS_SCHEMA);
-    const RES_2 = (await DYNAMO.getProductsByCategory("-1", 2, null, false));
+    const RES_2 = (await DYNAMO.getProductsByCategory("-1", 2, NaN, false));
     expect(RES_2).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
