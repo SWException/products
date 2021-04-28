@@ -15,7 +15,7 @@ export class Product {
 
     constructor (product: { [key: string]: any }) {
         this.id = product.id;
-        this.name = product.productName;
+        this.name = product.name;
         this.description = product.description;
         this.category = product.category;
         this.netPrice = product.netPrice;
@@ -27,6 +27,7 @@ export class Product {
         if (product.primaryPhoto) {
             this.primaryPhoto = product.primaryPhoto;
             if (product.secondaryPhotos) {
+                this.secondaryPhotos = new Array<string>();
                 for (let i = 0; i < product.secondaryPhotos.length; i++) {
                     this.secondaryPhotos[i] = product.secondaryPhotos[i];
                 }

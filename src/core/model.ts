@@ -57,8 +57,8 @@ export class Model {
 
     public async changeStock (id: string, quantity: number, token: string): Promise<boolean> {
         //check if the user is vendor
-        const IS_VENDOR = await this.USERS.checkVendor(token);
-        if (!IS_VENDOR){
+        const IS_AUTH = await this.USERS.checkUser(token);
+        if (!IS_AUTH){
             throw new Error("invalid token");
         }
         const PRODUCT= await this.DATABASE.get(id);
@@ -158,13 +158,21 @@ export class Model {
         return await this.DATABASE.delete(PRODUCT_ID);
     }
 
-    public async getProducts (category: string, minPrice: number, maxPrice: number): Promise<any>{
-        const PRODUCTS_DB = await this.DATABASE.getProductsByCategory(category, minPrice, maxPrice);
-        if(!PRODUCTS_DB)
+    public async getProducts (category: string, minPrice: number, maxPrice: number, sorting: string): Promise<any>{
+        let sortingAsc = null;
+        if (sorting) {
+            if (sorting == "asc")
+                sortingAsc = true;
+            else if (sorting == "desc")
+                sortingAsc = false;
+        }
+
+        const PRODUCTS_DB = await this.DATABASE.getProductsByCategory(category, minPrice, maxPrice, sortingAsc);
+        if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
         //microservices calls
-        for(let i =0; i<PRODUCTS_DB.length; i++){
+        for (let i = 0; i < PRODUCTS_DB.length; i++){
             const PRODUCT= await this.createProduct(PRODUCTS_DB[i]);
             console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
             PRODUCTS.push(PRODUCT);
@@ -178,7 +186,7 @@ export class Model {
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
         //microservices calls
-        for(let i =0; i<PRODUCTS_DB.length; i++){
+        for(let i = 0; i < PRODUCTS_DB.length; i++){
             const PRODUCT = await this.createProduct(PRODUCTS_DB[i]);
             console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
             PRODUCTS.push(PRODUCT);
@@ -187,7 +195,21 @@ export class Model {
     }
 
     public async getProductsByName (name:string): Promise<any>{
-        const PRODUCTS_DB = await this.DATABASE.getProductsByName(name);
+        
+        const CATEGORIES = await this.CATEGORIES.getCategories();
+        console.log("CATEGORIES ", CATEGORIES);
+        
+        const PRODUCTS_DB_PROMISES = [];
+        
+        CATEGORIES?.forEach(category => {
+            PRODUCTS_DB_PROMISES.push(this.DATABASE.getProductsByName(name, category.id));
+        });
+
+        const PRODUCTS_DB_TEMP = await Promise.all(PRODUCTS_DB_PROMISES);
+        console.log("PRODUCTS_DB_TEMP ", PRODUCTS_DB_TEMP);
+
+        const PRODUCTS_DB = PRODUCTS_DB_TEMP.flat(1); // From array of array to single array
+        
         if(!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];

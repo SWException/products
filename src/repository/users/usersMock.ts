@@ -7,4 +7,7 @@ export class UsersMock implements Users {
     public async checkCustomer (token: string): Promise<boolean> {
         return token? true : false;
     }
+    public async  checkUser(token: string): Promise<boolean> {
+        return token? true : false;
+    }
 }

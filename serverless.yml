@@ -21,7 +21,6 @@ custom:
     ignoreJWTSignature: true
   imageUploadBucket: imagebucket-products-dev
 
-
 provider:
   name: aws
   region: eu-central-1
@@ -125,21 +124,14 @@ resources:
                 KeyType: HASH
               - AttributeName: netPrice
                 KeyType: RANGE
-            Projection: 
+            Projection:
               ProjectionType: "ALL"
         GlobalSecondaryIndexes:
-        - IndexName: id-index
-          KeySchema:
-            - AttributeName: id
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-        - IndexName: name-index
-          KeySchema:
-            - AttributeName: name
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
+          - IndexName: id-index
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
 
         BillingMode: PAY_PER_REQUEST
-

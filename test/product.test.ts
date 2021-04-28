@@ -19,6 +19,7 @@ test('schemas validation', () => {
 });
 
 const MODEL = Model.createModelMock();
+
 test('get product from database', async () => {
     const RES = (await MODEL.getProduct("1"));
     expect(RES).toMatchSchema(PRODUCT_SCHEMA);
@@ -26,7 +27,7 @@ test('get product from database', async () => {
 
 test('insert product in the db', async () => {
     const RES = (await MODEL.addProduct({
-        "productName": "mock product 1",
+        "name": "mock product 1",
         "description": "this is a mock",
         "category": "1",
         "netPrice": 2.5,
@@ -36,7 +37,7 @@ test('insert product in the db', async () => {
 });
 
 test('get products from database', async () => {
-    const RES = (await MODEL.getProducts("1", 3, 10));
+    const RES = (await MODEL.getProducts("1", 3, 10, null));
     expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
 });
 
@@ -49,7 +50,7 @@ test('get products by name from database', async () => {
 test('update product in the database', async () => {
     const RES = (await MODEL.updateProduct("1", {
         "id": "1",
-        "productName": "mock product 1",
+        "name": "mock product 1",
         "description": "this is a mock",
         "category": "1",
         "netPrice": 2.5,

@@ -7,28 +7,29 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const CATEGORY = event?.queryStringParameters?.category;
     const MINPRICE: number = +event?.queryStringParameters?.minPrice;
     const MAXPRICE: number = +event?.queryStringParameters?.maxPrice;
-    const NAME: string = event?.queryStringParameters?.name;
+    const SORTING: string = event?.queryStringParameters?.sorting;
+    const SEARCH: string = event?.queryStringParameters?.search;
 
     const MODEL: Model = Model.createModel();
     if (CATEGORY) {
         console.log(CATEGORY, MINPRICE, MAXPRICE);
-        return await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE)
+        return await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE, SORTING)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })
             .catch((err) => {
                 console.log(err.message);
-                return API_RESPONSES._400(null, "error", err.message);
+                return API_RESPONSES._400(null, "error", "getProducts - " + err.message);
             });
     }
-    else if (NAME) {
-        return await MODEL.getProductsByName(NAME)
+    else if (SEARCH) {
+        return await MODEL.getProductsByName(SEARCH)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })
             .catch((err) => {
                 console.log(err.message);
-                return API_RESPONSES._400(null, "error", err.message);
+                return API_RESPONSES._400(null, "error", "getProductsByName - " + err.message);
             });
     }
     else{
@@ -38,7 +39,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
             })
             .catch((err) => {
                 console.log(err.message);
-                return API_RESPONSES._400(null, "error", err.message);
+                return API_RESPONSES._400(null, "error", "getHomeProducts - " + err.message);
             });
 
     }

@@ -21,4 +21,14 @@ export class UsersService implements Users {
                 return false;
             })
     }   
+
+    public async checkUser (token: string): Promise<boolean> {
+        return await fetch(process.env.SERVICES + `/users/check/${token}`)
+            .then(async responseUser => {
+                return responseUser.status == 200;
+            })
+            .catch(() => {
+                return false;
+            })
+    }   
 }

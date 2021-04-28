@@ -8,11 +8,11 @@ export class CategoriesService implements Categories {
         console.log(BODY);
         return BODY.data.name? BODY.data.name : null;
     }
-    public async getCategories (): Promise<JSON> {
+    public async getCategories (): Promise<any> {
         return await fetch(process.env.SERVICES + `/categories/`)
-            .then(async response => {
-                const RESPONSE = response.json();
-                return RESPONSE["data"]? RESPONSE["data"] : null;
+            .then(res => res.json())
+            .then((RESPONSE) => {
+                return RESPONSE?.data? RESPONSE.data : [];
             })
     }
 

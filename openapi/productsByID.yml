@@ -23,7 +23,7 @@ get:
               data:
                 {
                   id: "XYZ123",
-                  productName: "casetta",
+                  name: "casetta",
                   description: "Casetta in legno massello adattata a tutte le temperature",
                   primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                   secondaryPhotos:
@@ -32,6 +32,7 @@ get:
                     ],
                   category: "casetta",
                   netPrice: 9.99,
+                  price: 12.19,
                   tax: 22,
                   show: true,
                   showHome: false,

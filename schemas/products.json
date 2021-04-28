@@ -7,7 +7,7 @@
                 "type": "string",
                 "minLength": 1
             },
-            "productName": {
+            "name": {
                 "type": "string",
                 "minLength": 1,
                 "maxLength": 50
@@ -84,7 +84,7 @@
             },
             {
                 "required": [
-                    "productName",
+                    "name",
                     "description",
                     "netPrice",
                     "tax"

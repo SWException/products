@@ -3,28 +3,26 @@ import { Persistence } from "./persistence";
 
 export class Dynamo implements Persistence {
     private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
-    private static readonly TABLE_NAME = "products"
+    private static readonly TABLE_NAME = "products";
 
+    public async getProductsByName(name: string, category: string): Promise<any> {
+        const PARAMS = {
+            TableName: Dynamo.TABLE_NAME,
+            KeyConditionExpression: "category = :category",
+            FilterExpression: "contains(#product_name, :product_name)",
+            ExpressionAttributeNames: {
+                "#product_name": "name"
+            },
+            ExpressionAttributeValues: {
+                ":category": category,
+                ":product_name": name
+            }
+        };
+        console.log("PARAMS getProductsByName: ", PARAMS);
 
-    public async getProductsByName (name: string): Promise<any> {
-          
-            const PARAMS = {
-                TableName: Dynamo.TABLE_NAME,
-                IndexName: "name-index",
-                KeyConditionExpression: "contains(#product_name, :product_name)",
-                EspressionAttributeNames:{
-                    "#product_name": 'productName'
-                },
-                ExpressionAttributeValues:{
-                    ":product_name": name
-                }
-               
-            };
-            console.log("PARAMS getProductsByCategory: ", PARAMS);
-    
-            const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
-            console.log("Data from DB: " + JSON.stringify(DATA));
-            return DATA.Items;
+        const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
+        console.log("Data from DB: " + JSON.stringify(DATA));
+        return DATA.Items;
     }
 
     /**
@@ -65,7 +63,7 @@ export class Dynamo implements Persistence {
         return DATA.Items[0];
     }
 
-    public async getProductsByCategory (category: string, sortValueMin: number, sortValueMax: number):
+    public async getProductsByCategory (category: string, sortValueMin?: number, sortValueMax?: number, sortingAsc?: boolean):
         Promise<any> {
         let ConditionExpression = "category = :partitionValue";
         let AttributeValues = {
@@ -92,8 +90,15 @@ export class Dynamo implements Persistence {
             TableName: Dynamo.TABLE_NAME,
             IndexName: "categoryPrice",
             KeyConditionExpression: ConditionExpression,
+            //FilterExpression: "",
             ExpressionAttributeValues: AttributeValues
+
         };
+
+        if(sortingAsc === false || sortingAsc === true ){
+            PARAMS["ScanIndexForward"] = sortingAsc;
+        }
+
         console.log("PARAMS getProductsByCategory: ", PARAMS);
 
         const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
@@ -104,7 +109,11 @@ export class Dynamo implements Persistence {
     public async getProductsHome (): Promise<any> {
         //TODO: Da fare che ritorna solo quelli indicati come da visualizzare in home. Per ora li torna tutti
         const PARAMS = {
-            TableName: Dynamo.TABLE_NAME
+            TableName: Dynamo.TABLE_NAME,
+            FilterExpression: "showHome = :sort",
+            ExpressionAttributeValues: {
+                ":sort": true
+            }
         };
 
         const DATA = await Dynamo.DOCUMENT_CLIENT.scan(PARAMS).promise();
