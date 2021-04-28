@@ -196,19 +196,7 @@ export class Model {
 
     public async getProductsByName (name:string): Promise<any>{
         
-        const CATEGORIES = await this.CATEGORIES.getCategories();
-        console.log("CATEGORIES ", CATEGORIES);
-        
-        const PRODUCTS_DB_PROMISES = [];
-        
-        CATEGORIES?.forEach(category => {
-            PRODUCTS_DB_PROMISES.push(this.DATABASE.getProductsByName(name, category.id));
-        });
-
-        const PRODUCTS_DB_TEMP = await Promise.all(PRODUCTS_DB_PROMISES);
-        console.log("PRODUCTS_DB_TEMP ", PRODUCTS_DB_TEMP);
-
-        const PRODUCTS_DB = PRODUCTS_DB_TEMP.flat(1); // From array of array to single array
+        const PRODUCTS_DB = await this.DATABASE.getProductsByName(name); // From array of array to single array
         
         if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
