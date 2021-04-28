@@ -5,9 +5,26 @@ export class Dynamo implements Persistence {
     private static readonly DOCUMENT_CLIENT= new AWS.DynamoDB.DocumentClient({ region: "eu-central-1" });
     private static readonly TABLE_NAME = "products"
 
+
     public async getProductsByName (name: string): Promise<any> {
-        //  TODO: l'implementazione è triviale e lasciata al lettore
-        throw new Error('Method not implemented'+ name);
+          
+            const PARAMS = {
+                TableName: Dynamo.TABLE_NAME,
+                IndexName: "name-index",
+                KeyConditionExpression: "contains(#product_name, :product_name)",
+                EspressionAttributeNames:{
+                    "#product_name": 'productName'
+                },
+                ExpressionAttributeValues:{
+                    ":product_name": name
+                }
+               
+            };
+            console.log("PARAMS getProductsByCategory: ", PARAMS);
+    
+            const DATA = await Dynamo.DOCUMENT_CLIENT.query(PARAMS).promise();
+            console.log("Data from DB: " + JSON.stringify(DATA));
+            return DATA.Items;
     }
 
     /**
