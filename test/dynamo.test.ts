@@ -14,33 +14,33 @@ const PRODUCTS_SCHEMA: JSONSchema7 = {
     $ref: "../schemas/products.json#/products"
 };
 
-test('get product from database', async () => {
-    const RES = (await DYNAMO.get("1"));
-    expect(RES).toMatchSchema(PRODUCT_SCHEMA);
-});
-
-test('get products from database', async () => {
-    const RES = (await DYNAMO.getProductsByCategory("1", 2, 10));
-    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
-});
-
-test('update product in database', async () => {
-    const RES = (await DYNAMO.update("1",{
-        "id": "1",
-        "netPrice": 3,
-        "tax": "1"
-    }));
-    expect(RES).toBe(true);
-});
-
 test('add product to database', async () => {
     const RES = (await DYNAMO.write({
         "id": "-1",
         "name": "mock product",
         "description": "this is a mock",
-        "category": "1",
+        "category": "-1",
         "netPrice": 7.2,
-        "tax": "1"
+        "tax": "-1"
+    }));
+    expect(RES).toBe(true);
+});
+
+test('get product from database', async () => {
+    const RES = (await DYNAMO.get("-1"));
+    expect(RES).toMatchSchema(PRODUCT_SCHEMA);
+});
+
+test('get products from database', async () => {
+    const RES = (await DYNAMO.getProductsByCategory("-1", 2, 10));
+    expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
+});
+
+test('update product in database', async () => {
+    const RES = (await DYNAMO.update("-1",{
+        "id": "-1",
+        "netPrice": 3,
+        "tax": "-1"
     }));
     expect(RES).toBe(true);
 });

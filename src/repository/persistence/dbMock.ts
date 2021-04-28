@@ -3,20 +3,20 @@ import { Persistence } from "./persistence";
 export class DbMock implements Persistence {
 
     private readonly PRODUCT_1= {
-        "id": "1",
+        "id": "-1",
         "name": "mock product 1",
         "description": "this is a mock",
-        "category": "1",
+        "category": "-1",
         "netPrice": 2.5,
-        "tax": "1"
+        "tax": "-1"
     };
     private readonly PRODUCT_2= {
-        "id": "2",
+        "id": "-2",
         "name": "mock product 2",
         "description": "this is a mock",
-        "category": "2",
+        "category": "-2",
         "netPrice": 2.5,
-        "tax": "2"
+        "tax": "-2"
     };
     
     public async getProductsByName(name: string): Promise<any> {
@@ -50,13 +50,13 @@ export class DbMock implements Persistence {
     }
 
     public async get (id: string): Promise<any>{
-        return {
+        return (id)?{
             "id": id,
             "name": "mock product",
             "description": "this is a mock",
-            "category": "1",
+            "category": "-1",
             "netPrice": 2.5,
-            "tax": "1"
-        };
+            "tax": "-1"
+        }:null;
     }
 }

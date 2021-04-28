@@ -23,9 +23,9 @@ export const S3 = {
         if (!image) {
             throw Error('image not found');
         }
-        const IMGMIME = ['image/jpeg', 'image/png', 'image/jpg'];
-        const IMGEXT = ['jpeg', 'png', 'jpg']
-        let imageData: string;
+        const IMG_MIME = ['image/jpeg', 'image/png', 'image/jpg'];
+        const IMG_EXT = ['jpeg', 'png', 'jpg']
+        let imageData: string = image;
         if (image.substr(0, 7) === 'base64,') {
             imageData = image.substr(7, image.length);
         }
@@ -33,14 +33,14 @@ export const S3 = {
         const BUFFER = Buffer.from(imageData, 'base64');
         const FILEINFO = await fileType.fromBuffer(BUFFER);
 
-        if (!(FILEINFO.mime in IMGMIME) || !(FILEINFO.ext in IMGEXT)) {
-            throw Error("img mime or ext doesn't match jpg, jpeg or png");
+        if (!(IMG_MIME.includes(FILEINFO.mime)) || !(IMG_EXT.includes(FILEINFO.ext))) {
+            throw Error("img mime or ext doesn't match jpg, jpeg or png. Got: " + FILEINFO.mime + " " + FILEINFO.ext);
         }
         const NAME = uuid(); //create a Universal Unique ID to name the img with
         const KEY = `${NAME}.${FILEINFO.ext}`;  //create a unique name for the file
         const URL = `https://${bucketName}.s3-${process.env.REGION}.amazonaws.com/${KEY}`;
         //upload to s3
-        await this.uploadFile(bucketName, BUFFER, KEY, FILEINFO.mime);//TODO: error handling
+        await this.uploadFile(bucketName, BUFFER, KEY, FILEINFO.mime); // TODO: error handling
 
         return URL;
     },
@@ -75,7 +75,7 @@ export const S3 = {
                 return data;
             })
             .catch((err) => {
-                throw Error("Error in S3 upload for bucket" + bucket + ": " + err);
+                throw Error("Error in S3 upload for bucket " + bucket + ": " + err);
             });
     },
 
