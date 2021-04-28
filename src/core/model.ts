@@ -210,11 +210,11 @@ export class Model {
 
         const PRODUCTS_DB = PRODUCTS_DB_TEMP.flat(1); // From array of array to single array
         
-        if(!PRODUCTS_DB)
+        if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
         //microservices calls
-        for(let i =0; i<PRODUCTS_DB.length; i++){
+        for (let i = 0; i < PRODUCTS_DB.length; i++) {
             const PRODUCT = await this.createProduct(PRODUCTS_DB[i]);
             console.log("Product " + i + ": " + JSON.stringify(PRODUCT));
             PRODUCTS.push(PRODUCT);

@@ -19,8 +19,16 @@ export class DbMock implements Persistence {
         "tax": "2"
     };
     
-    public async getProductsByName (name: string, _category: string): Promise<any> {
-        return name? [this.PRODUCT_1, this.PRODUCT_2] : false; 
+    public async getProductsByName (name: string, category: string): Promise<any> {
+        if(name){
+            if(category){
+                if (category == this.PRODUCT_1.category)
+                    return this.PRODUCT_1;
+                if (category == this.PRODUCT_2.category)
+                    return this.PRODUCT_2;
+            }
+        }
+        return []; 
     }
 
     public async getProductsByCategory (category: string, _sortValueMin?: number, _sortValueMax?: number, _sortingAsc?: boolean):
