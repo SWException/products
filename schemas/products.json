@@ -60,23 +60,6 @@
             }
         }
     },
-    "dbProduct": {
-        "allOf": [
-            {
-                "$ref": "#/product"
-            },
-            {
-                "required": [
-                    "id",
-                    "productName",
-                    "description",
-                    "category",
-                    "netPrice",
-                    "tax"
-                ]
-            }
-        ]
-    },
     "insertProduct": {
         "allOf": [
             {
@@ -107,7 +90,7 @@
     "products": {
         "type": "array",
         "items": {
-            "$ref": "#/dbProduct"
+            "$ref": "#/product"
         },
         "uniqueItems": true
     },

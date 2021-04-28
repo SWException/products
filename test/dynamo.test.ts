@@ -8,7 +8,7 @@ expect.extend(matchersWithOptions(SCHEMAS, (ajv) => setFormats(ajv)));
 const DYNAMO = new Dynamo();
 
 const PRODUCT_SCHEMA: JSONSchema7 = {
-    $ref: "../schemas/products.json#/dbProduct"
+    $ref: "../schemas/products.json#/product"
 };
 const PRODUCTS_SCHEMA: JSONSchema7 = {
     $ref: "../schemas/products.json#/products"
@@ -36,7 +36,7 @@ test('update product in database', async () => {
 test('add product to database', async () => {
     const RES = (await DYNAMO.write({
         "id": "-1",
-        "productName": "mock product",
+        "name": "mock product",
         "description": "this is a mock",
         "category": "1",
         "netPrice": 7.2,
