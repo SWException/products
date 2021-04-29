@@ -49,7 +49,7 @@ export class S3 implements Photos {
    * @param  {string} key: key of file
    * @returns Promise
    */
-    async deleteImage (key: string): Promise<s3.DeleteObjectOutput> {
+    async deleteImage (key: string): Promise<boolean> {
         const PARAMS: s3.DeleteObjectRequest = {
             Key: key,
             Bucket: S3.BUCKETNAME,
