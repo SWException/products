@@ -24,7 +24,6 @@ export class S3 implements Photos {
             throw Error('image not found');
         }
         const IMGMIME = ['image/jpeg', 'image/png', 'image/jpg'];
-        const IMGEXT = ['jpeg', 'png', 'jpg']
         let imageData: string;
         if (image.substr(0, 7) === 'base64,') {
             imageData = image.substr(7, image.length);
@@ -34,7 +33,7 @@ export class S3 implements Photos {
         const FILEINFO = await fileType.fromBuffer(BUFFER);
         console.log(FILEINFO.mime, FILEINFO.ext)
 
-        if (!(FILEINFO.mime in IMGMIME)) {
+        if (!(IMGMIME.includes(FILEINFO.mime))) {
             throw Error("img mime doesn't match jpg, jpeg or png");
         }
         const NAME = uuid(); //create a Universal Unique ID to name the img with
