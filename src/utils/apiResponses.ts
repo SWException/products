@@ -27,7 +27,9 @@ export function response (statusCode: number,
         statusCode,
         headers: {
             'Access-Control-Allow-Origin': '*', 
-            'Access-Control-Allow-Credentials': true
+            'Access-Control-Allow-Credentials': true,
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE, PATCH',
+            'Access-Control-Allow-Headers': '*'
         },
         body: JSON.stringify(BODY, null, 2)
     };

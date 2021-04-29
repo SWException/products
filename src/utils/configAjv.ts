@@ -1,5 +1,5 @@
-import responses from '../../schemas/response.json';
-import products from '../../schemas/products.json';
+import responses from 'schemas/response.json';
+import products from 'schemas/products.json';
 import Ajv from 'ajv';
 import { JSONSchema7 } from 'json-schema';
 
