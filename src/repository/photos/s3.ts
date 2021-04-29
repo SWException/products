@@ -59,9 +59,11 @@ export class S3 implements Photos {
             .deleteObject(PARAMS)
             .promise()
             .then((data) => {
-                return data;
+                console.log(data);
+                return true;
             })
             .catch((err) => {
+                console.log(err.message);
                 throw Error("Error in S3 delete for bucket " + S3.BUCKETNAME + " :" + err);
             });
     }
