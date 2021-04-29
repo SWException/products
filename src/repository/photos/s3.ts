@@ -32,9 +32,10 @@ export class S3 implements Photos {
 
         const BUFFER = Buffer.from(imageData, 'base64');
         const FILEINFO = await fileType.fromBuffer(BUFFER);
+        console.log(FILEINFO.mime, FILEINFO.ext)
 
-        if (!(FILEINFO.mime in IMGMIME) || !(FILEINFO.ext in IMGEXT)) {
-            throw Error("img mime or ext doesn't match jpg, jpeg or png");
+        if (!(FILEINFO.mime in IMGMIME)) {
+            throw Error("img mime doesn't match jpg, jpeg or png");
         }
         const NAME = uuid(); //create a Universal Unique ID to name the img with
         const KEY = `${NAME}.${FILEINFO.ext}`;  //create a unique name for the file
