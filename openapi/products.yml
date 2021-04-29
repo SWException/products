@@ -51,10 +51,10 @@ get:
                     id: "123VF",
                     name: "gioco",
                     description: "descrizione del prodotto",
-                    primaryPhoto: /image.jpg,
+                    primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                     secondaryPhotos:
                       [
-                        "/image.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                       ],
                     category: "games",
                     netPrice: 10,
@@ -68,11 +68,11 @@ get:
                     id: "321VF",
                     name: "gioco2",
                     description: "descrizione del prodotto",
-                    primaryPhoto: /image.jpg,
+                    primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                     secondaryPhotos:
                       [
-                        "/image.jpg",
-                        "/image.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                       ],
                     category: "games",
                     netPrice: 20,
@@ -118,6 +118,9 @@ post:
             netPrice: 50.00,
             tax: 22,
             stock: 5,
+            primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
+            secondaryPhotos: ["https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg", 
+            "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg"]
           }
   responses:
     200:

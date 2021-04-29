@@ -4,7 +4,6 @@ import { DbMock } from "../repository/persistence/dbMock";
 import { Product } from "../repository/product";
 import { v4 as uuidv4 } from 'uuid';
 import { buildAjv } from 'src/utils/configAjv';
-import { S3 as s3 } from "src/repository/persistence/s3"
 import Ajv from "ajv";
 import { Taxes } from "src/repository/taxes/taxes";
 import { Categories } from "src/repository/categories/categories";
@@ -15,6 +14,9 @@ import { TaxesService } from "src/repository/taxes/taxesService";
 import { CategoriesService } from "src/repository/categories/categoriesService";
 import { TaxesMock } from "src/repository/taxes/taxesMock";
 import { CategoriesMock } from "src/repository/categories/categoriesMock";
+import { Photos } from "src/repository/photos/photos";
+import { S3 } from "src/repository/photos/s3";
+import { S3Mock } from "src/repository/photos/s3mock";
 
 export class Model {
     private readonly DATABASE: Persistence;
@@ -22,20 +24,22 @@ export class Model {
     private readonly USERS: Users;
     private readonly TAXES: Taxes;
     private readonly CATEGORIES: Categories;
+    private readonly PHOTOS: Photos;
 
-    private constructor(db: Persistence, users: Users, taxes: Taxes, categories: Categories) {
+    private constructor(db: Persistence, users: Users, taxes: Taxes, categories: Categories, photos: Photos) {
         this.DATABASE = db;
         this.CATEGORIES = categories;
         this.TAXES = taxes;
         this.USERS = users;
+        this.PHOTOS= photos;
     }
 
     public static createModel(): Model {
-        return new Model(new Dynamo(), new UsersService(), new TaxesService(), new CategoriesService());
+        return new Model(new Dynamo(), new UsersService(), new TaxesService(), new CategoriesService(), new S3());
     }
 
     public static createModelMock(): Model {
-        return new Model(new DbMock(), new UsersMock(), new TaxesMock(), new CategoriesMock());
+        return new Model(new DbMock(), new UsersMock(), new TaxesMock(), new CategoriesMock(), new S3Mock());
     }
 
     /**
@@ -101,18 +105,17 @@ export class Model {
 
         // handle product image (only if there is an image)
         if (data.primaryPhoto) {
-            const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
             //DATA.image become an URL
-            data.primaryPhoto = await s3.uploadImage(data.primaryPhoto, BUCKETNAME);
+            data.primaryPhoto = await this.PHOTOS.uploadImage(data.primaryPhoto);
             if (data.secondaryPhotos) {
                 for (let i = 0; i < data.secondaryPhotos.length; i++) {
                     data.secondaryPhotos[i] =
-                        await s3.uploadImage(data.secondaryPhotos[i], BUCKETNAME);
+                        await this.PHOTOS.uploadImage(data.secondaryPhotos[i]);
                 }
             }
         }
-
-        data.id = uuidv4();
+        if (!data.id)
+            data.id = uuidv4();
         const RES: Promise<boolean> = this.DATABASE.write(JSON.parse(JSON.stringify(data)));
         return RES;
     }
@@ -139,18 +142,22 @@ export class Model {
         if (!VALID) {
             throw new Error("Product does not match the schema of required attributes");
         }
-
-        //image replacing, if needed
-        if (DATA['primaryPhoto']) {
-            const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
-            s3.deleteFile(BUCKETNAME, DATA['primaryPhoto'].key)
-            DATA['primaryPhoto'] = await s3.uploadImage(DATA['primaryPhoto'], BUCKETNAME);
+        const OLD_PRODUCT= await this.DATABASE.get(PRODUCT_ID);
+        // image replacing, if needed: we need to retrieve the product from the db,
+        // delete the current image from s3 and update with the new image
+        if (DATA.primaryPhoto) {
+            this.PHOTOS.deleteImage(OLD_PRODUCT.primaryPhoto);
+            DATA.primaryPhoto = await this.PHOTOS.uploadImage(DATA.primaryPhoto);
         }
 
-        if (DATA['secondaryPhotos']) {
-            const BUCKETNAME = process.env.PRODUCT_IMG_BUCKET;
-            s3.deleteFile(BUCKETNAME, DATA[''].key)
-            DATA['primaryPhoto'] = await s3.uploadImage(DATA['primaryPhoto'], BUCKETNAME);
+        if (DATA.secondaryPhotos) {
+            //delete all old photos
+            for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length(); i++) {
+                await this.PHOTOS.deleteImage(OLD_PRODUCT.secondaryPhotos[i]);
+            }
+            for(let i = 0; i<DATA.secondaryPhotos.length(); i++) {
+                DATA.secondaryPhotos[i]=await this.PHOTOS.uploadImage(DATA.secondaryPhotos[i]);
+            }
         }
 
         const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
@@ -168,6 +175,17 @@ export class Model {
         if(!PRODUCT_ID){
             throw new Error("Product id not valid");
         }
+
+        // images deletion
+        const PRODUCT= await this.DATABASE.get(PRODUCT_ID);
+        if(PRODUCT.primaryPhoto)
+            await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
+        if (PRODUCT.secondaryPhotos) {
+            for(let i = 0; i<PRODUCT.secondaryPhotos.length(); i++) {
+                await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
+            }
+        }
+
 
         return await this.DATABASE.delete(PRODUCT_ID);
     }
