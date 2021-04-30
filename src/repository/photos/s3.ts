@@ -24,7 +24,7 @@ export class S3 implements Photos {
             throw Error('image not found');
         }
         const IMGMIME = ['image/jpeg', 'image/png', 'image/jpg'];
-        let imageData: string = image;
+        let imageData = image;
         if (image.substr(0, 7) === 'base64,') {
             imageData = image.substr(7, image.length);
         }

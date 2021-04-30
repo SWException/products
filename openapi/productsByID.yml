@@ -70,7 +70,14 @@ patch:
       application/json:
         schema:
           $ref: "../schemas/products.json#/editProduct"
-        example: { id: "123VF", netPrice: 8.00 }
+        example: { id: "123VF", 
+                    netPrice: 8.00,
+                    primaryPhoto: "base64,50m3Beaut1fulP1c==",
+                    secondaryPhotos: [
+                      "base64,50m3Beaut1fulP1c==",
+                      "base64,50m3Beaut1fulP1c=="
+                    ] 
+                 }
   responses:
     200:
       description: "modify successful"

@@ -116,11 +116,11 @@ post:
             name: "scarpe",
             description: "queste sono delle bellissime scarpe",
             netPrice: 50.00,
-            tax: 22,
+            tax: "1",
             stock: 5,
-            primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
-            secondaryPhotos: ["https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg", 
-            "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg"]
+            primaryPhoto: "base64,idkS0m3th1ng1nbase64==",
+            secondaryPhotos: ["base64,idkS0m3th1ng1nbase64==", 
+            "base64,idkS0m3th1ng1nbase64=="]
           }
   responses:
     200:
