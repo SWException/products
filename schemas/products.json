@@ -54,7 +54,7 @@
                 "type": "boolean"
             },
             "stock": {
-                "type": "integer",
+                "type": "number",
                 "format": "int64",
                 "minimum": 0
             }

@@ -14,12 +14,18 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
         return API_RESPONSES._400(null, null, "error during the permissions check")
     }
     const MODEL: Model = Model.createModel();
+
+    try {
     const RES: boolean = await MODEL.addProduct(DATA, TOKEN);
 
     console.log(JSON.stringify(RES));
-
-    if (RES)
-        return API_RESPONSES._200(null);
-    else
-        return API_RESPONSES._400(null, null, "error in the creation of the product");
+        if (RES)
+            return API_RESPONSES._200(null);
+        else
+            return API_RESPONSES._400(null, null, "error in the creation of the product");
+    }
+    catch (err) {
+        console.log(err.message);
+        return API_RESPONSES._400(err, "error", err.message);
+    }
 }
