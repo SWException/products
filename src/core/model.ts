@@ -142,26 +142,32 @@ export class Model {
         if (!VALID) {
             throw new Error("Product does not match the schema of required attributes");
         }
-        const OLD_PRODUCT= await this.DATABASE.get(PRODUCT_ID);
-        // image replacing, if needed: we need to retrieve the product from the db,
-        // delete the current image from s3 and update with the new image
-        if (DATA.primaryPhoto) {
-            this.PHOTOS.deleteImage(OLD_PRODUCT.primaryPhoto);
-            DATA.primaryPhoto = await this.PHOTOS.uploadImage(DATA.primaryPhoto);
-        }
+        try {
+            const OLD_PRODUCT= await this.DATABASE.get(PRODUCT_ID);
+            // image replacing, if needed: we need to retrieve the product from the db,
+            // delete the current image from s3 and update with the new image
+            if (DATA.primaryPhoto) {
+                this.PHOTOS.deleteImage(OLD_PRODUCT.primaryPhoto);
+                DATA.primaryPhoto = await this.PHOTOS.uploadImage(DATA.primaryPhoto);
+            }
 
-        if (DATA.secondaryPhotos) {
+            if (DATA.secondaryPhotos) {
             //delete all old photos
-            for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length; i++) {
-                await this.PHOTOS.deleteImage(OLD_PRODUCT.secondaryPhotos[i]);
+                for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length; i++) {
+                    await this.PHOTOS.deleteImage(OLD_PRODUCT.secondaryPhotos[i]);
+                }
+                for(let i = 0; i<DATA.secondaryPhotos.length; i++) {
+                    DATA.secondaryPhotos[i]=await this.PHOTOS.uploadImage(DATA.secondaryPhotos[i]);
+                }
             }
-            for(let i = 0; i<DATA.secondaryPhotos.length; i++) {
-                DATA.secondaryPhotos[i]=await this.PHOTOS.uploadImage(DATA.secondaryPhotos[i]);
-            }
-        }
 
-        const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
-        return PRODUCT;
+            const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
+            return PRODUCT;
+        }
+        catch(err) {
+            console.log(err.message);
+            throw new Error(err.message);
+        }
     }
 
     public async deleteProduct(PRODUCT_ID: string, token: string):

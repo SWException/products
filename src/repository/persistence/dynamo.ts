@@ -137,6 +137,7 @@ export class Dynamo implements Persistence {
 
     public async update (id: string, data: any): Promise<boolean>{
         const VALUES = {};
+        const NAMES = {};
         let expression = "SET ";
         let first = true;
 
@@ -149,8 +150,9 @@ export class Dynamo implements Persistence {
                 else {
                     first = false;
                 }
-                expression += key + " = :" + key;
+                expression += "#"+ key + " = :" + key;
                 VALUES[":" + key] = VALUE;
+                NAMES["#" + key] = key;
             }
         });
 
@@ -163,7 +165,8 @@ export class Dynamo implements Persistence {
                 id: id
             },
             UpdateExpression: expression,
-            ExpressionAttributeValues: VALUES
+            ExpressionAttributeValues: VALUES,
+            ExpressionAttributeNames: NAMES
         }
         console.log(PARAMS);
 
