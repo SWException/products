@@ -65,7 +65,8 @@ export class Dynamo implements Persistence {
         Promise<any> {
         let ConditionExpression = "category = :partitionValue";
         let AttributeValues = {
-            ":partitionValue": category
+            ":partitionValue": category,
+            ":show": true,
         };
 
         if ((!isNaN(sortValueMax) || sortValueMax === null) && (!isNaN(sortValueMin) || sortValueMin === null)) {
@@ -88,9 +89,11 @@ export class Dynamo implements Persistence {
             TableName: Dynamo.TABLE_NAME,
             IndexName: "categoryPrice",
             KeyConditionExpression: ConditionExpression,
-            //FilterExpression: "",
-            ExpressionAttributeValues: AttributeValues
-
+            FilterExpression: "#show = :show",
+            ExpressionAttributeValues: AttributeValues,
+            ExpressionAttributeNames: {
+                "#show": "show"
+            }
         };
 
         if(sortingAsc === false || sortingAsc === true ){
@@ -108,9 +111,14 @@ export class Dynamo implements Persistence {
         //TODO: Da fare che ritorna solo quelli indicati come da visualizzare in home. Per ora li torna tutti
         const PARAMS = {
             TableName: Dynamo.TABLE_NAME,
-            FilterExpression: "showHome = :sort",
+            FilterExpression: "#showHome = :showHome AND #show = :show",
             ExpressionAttributeValues: {
-                ":sort": true
+                ":showHome": true,
+                ":show": true
+            },
+            ExpressionAttributeNames: {
+                "#showHome": "showHome",
+                "#show": "show"
             }
         };
 

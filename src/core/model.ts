@@ -261,9 +261,11 @@ export class Model {
         //tax
         const TAX = await this.TAXES.getTax(product.tax);
         const TAX_VALUE = TAX?.value;
+        product.taxId = product.tax;
         product.tax = TAX_VALUE;
         //category
         const CATEGORY = await this.CATEGORIES.getCategoryName(product.category);
+        product.categoryId = product.category;
         product.category = CATEGORY;
         return new Product(product);
     }
