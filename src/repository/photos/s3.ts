@@ -50,7 +50,8 @@ export class S3 implements Photos {
    * @returns Promise
    */
     async deleteImage (key: string): Promise<boolean> {
-        const IMAGEKEY = key.substr(S3.BUCKETNAME.length+1, key.length); //key without url 
+        const BASEURL = `https://${S3.BUCKETNAME}.s3-${process.env.REGION}.amazonaws.com/`
+        const IMAGEKEY = key.substr(BASEURL.length, key.length); //key without url 
         const PARAMS: s3.DeleteObjectRequest = {
             Key: IMAGEKEY,
             Bucket: S3.BUCKETNAME,
