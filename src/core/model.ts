@@ -152,10 +152,10 @@ export class Model {
 
         if (DATA.secondaryPhotos) {
             //delete all old photos
-            for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length(); i++) {
+            for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length; i++) {
                 await this.PHOTOS.deleteImage(OLD_PRODUCT.secondaryPhotos[i]);
             }
-            for(let i = 0; i<DATA.secondaryPhotos.length(); i++) {
+            for(let i = 0; i<DATA.secondaryPhotos.length; i++) {
                 DATA.secondaryPhotos[i]=await this.PHOTOS.uploadImage(DATA.secondaryPhotos[i]);
             }
         }
