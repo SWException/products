@@ -70,36 +70,36 @@ export class S3 implements Photos {
 
     //private 
 
-        /**
+    /**
    * @param  {Buffer} data: data file that must be pushed to S3
    * @param  {string} key: key of the file
    * @param  {string} contentType: extension of the file, mime type
    * @param  {string='public-read'} ACL: Access Control List: file permissions 
    * @returns Promise
    */
-         private async uploadFile (
-            bucket: string,
-            data: Buffer,
-            key: string,
-            contentType: string,
-            ACL = 'public-read'
-        ): Promise<s3.ManagedUpload.SendData> {
-            const PARAMS: s3.PutObjectRequest = {
-                Body: data,
-                Key: key,
-                ContentType: contentType,
-                Bucket: bucket,
-                ACL: ACL,
-            };
+    private async uploadFile (
+        bucket: string,
+        data: Buffer,
+        key: string,
+        contentType: string,
+        ACL = 'public-read'
+    ): Promise<s3.ManagedUpload.SendData> {
+        const PARAMS: s3.PutObjectRequest = {
+            Body: data,
+            Key: key,
+            ContentType: contentType,
+            Bucket: bucket,
+            ACL: ACL,
+        };
     
-            return await S3.S3OBJ
-                .upload(PARAMS)
-                .promise()
-                .then((data) => {
-                    return data;
-                })
-                .catch((err) => {
-                    throw Error("Error in S3 upload for bucket" + S3.BUCKETNAME + ": " + err);
-                });
-        }
-};
+        return await S3.S3OBJ
+            .upload(PARAMS)
+            .promise()
+            .then((data) => {
+                return data;
+            })
+            .catch((err) => {
+                throw Error("Error in S3 upload for bucket" + S3.BUCKETNAME + ": " + err);
+            });
+    }
+}

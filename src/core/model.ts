@@ -177,13 +177,19 @@ export class Model {
         }
 
         // images deletion
-        const PRODUCT= await this.DATABASE.get(PRODUCT_ID);
-        if(PRODUCT.primaryPhoto)
-            await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
-        if (PRODUCT.secondaryPhotos) {
-            for(let i = 0; i<PRODUCT.secondaryPhotos.length; i++) {
-                await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
+        try{
+            const PRODUCT= await this.DATABASE.get(PRODUCT_ID);
+            if(PRODUCT.primaryPhoto)
+                await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
+            if (PRODUCT.secondaryPhotos) {
+                for(let i = 0; i<PRODUCT.secondaryPhotos.length; i++) {
+                    await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
+                }
             }
+        }
+        catch(err) {
+            console.log(err.message);
+            throw new Error (err.message);
         }
 
 
