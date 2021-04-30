@@ -181,7 +181,7 @@ export class Model {
         if(PRODUCT.primaryPhoto)
             await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
         if (PRODUCT.secondaryPhotos) {
-            for(let i = 0; i<PRODUCT.secondaryPhotos.length(); i++) {
+            for(let i = 0; i<PRODUCT.secondaryPhotos.length; i++) {
                 await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
             }
         }
