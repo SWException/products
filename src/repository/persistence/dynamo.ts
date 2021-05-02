@@ -39,9 +39,7 @@ export class Dynamo implements Persistence {
             IndexName: "id-index"
         };
 
-        await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise().catch(
-            (err) => { return err; }
-        );
+        await Dynamo.DOCUMENT_CLIENT.delete(PARAMS).promise();
         return true;  
     }
 
@@ -137,9 +135,7 @@ export class Dynamo implements Persistence {
             },
             Item: data
         };
-        const DATA = await Dynamo.DOCUMENT_CLIENT.put(PARAMS).promise().catch(
-            () => { return false; }
-        );
+        const DATA = await Dynamo.DOCUMENT_CLIENT.put(PARAMS).promise();
         return DATA ? true : false;
     }
 
@@ -150,7 +146,7 @@ export class Dynamo implements Persistence {
         let first = true;
 
         Object.keys(data).forEach(function (key) {
-            if (key != "id") {
+            if (key != "id" && key != "category") {
                 const VALUE = data[key];
                 if (!first) {
                     expression += ", "
@@ -178,9 +174,7 @@ export class Dynamo implements Persistence {
         }
         console.log(PARAMS);
 
-        const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise().catch(
-            (err) => { console.log(err); return false;}
-        );
+        const DATA = await Dynamo.DOCUMENT_CLIENT.update(PARAMS).promise();
         return DATA ? true : false;
     }
 }

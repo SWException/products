@@ -19,9 +19,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     }
 
     const MODEL: Model = Model.createModel();
-    const RES = await MODEL.updateProduct(DATA['id'], DATA, TOKEN);
-
-    console.log(JSON.stringify(RES));
-
-    return API_RESPONSES._200(JSON.parse(JSON.stringify(RES)));
+    return await MODEL.updateProduct(PRODUCT_ID, DATA, TOKEN)
+        .then((RES) => API_RESPONSES._200(JSON.parse(JSON.stringify(RES))))
+        .catch((err: Error) => API_RESPONSES._400(err, "error", err.message));
 }

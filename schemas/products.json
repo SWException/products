@@ -76,16 +76,7 @@
         ]
     },
     "editProduct": {
-        "allOf": [
-            {
-                "$ref": "#/product"
-            },
-            {
-                "required": [
-                    "id"
-                ]
-            }
-        ]
+        "$ref": "#/product"
     },
     "products": {
         "type": "array",
