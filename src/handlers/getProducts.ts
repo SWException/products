@@ -10,10 +10,12 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
     const SORTING: string = event?.queryStringParameters?.sorting;
     const SEARCH: string = event?.queryStringParameters?.search;
 
+    const TOKEN: string = event.headers?.Authorization;
+
     const MODEL: Model = Model.createModel();
     if (CATEGORY) {
         console.log(CATEGORY, MINPRICE, MAXPRICE);
-        return await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE, SORTING)
+        return await MODEL.getProducts(CATEGORY, MINPRICE, MAXPRICE, SORTING, TOKEN)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })
@@ -23,7 +25,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
             });
     }
     else if (SEARCH) {
-        return await MODEL.getProductsByName(SEARCH)
+        return await MODEL.getProductsByName(SEARCH, TOKEN)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })
@@ -33,7 +35,7 @@ export const HANDLER: APIGatewayProxyHandler = async (event) => {
             });
     }
     else{
-        return await MODEL.getHomeProducts()
+        return await MODEL.getHomeProducts(TOKEN)
             .then((PRODUCTS) => {
                 return API_RESPONSES._200(PRODUCTS);
             })

@@ -26,7 +26,7 @@ export class Model {
     private readonly CATEGORIES: Categories;
     private readonly PHOTOS: Photos;
 
-    private constructor(db: Persistence, users: Users, taxes: Taxes, categories: Categories, photos: Photos) {
+    private constructor (db: Persistence, users: Users, taxes: Taxes, categories: Categories, photos: Photos) {
         this.DATABASE = db;
         this.CATEGORIES = categories;
         this.TAXES = taxes;
@@ -34,11 +34,11 @@ export class Model {
         this.PHOTOS= photos;
     }
 
-    public static createModel(): Model {
+    public static createModel (): Model {
         return new Model(new Dynamo(), new UsersService(), new TaxesService(), new CategoriesService(), new S3());
     }
 
-    public static createModelMock(): Model {
+    public static createModelMock (): Model {
         return new Model(new DbMock(), new UsersMock(), new TaxesMock(), new CategoriesMock(), new S3Mock());
     }
 
@@ -47,8 +47,13 @@ export class Model {
          * @param id id of the product
          * @returns the product with the given id
          */
-    public async getProduct(id: string): Promise<Product> {
-        const PRODUCT_DB: any = await this.DATABASE.get(id);
+    public async getProduct (id: string, token?: string): Promise<Product> {
+        console.log("token if received is: ", token);
+        
+        // const IS_VENDOR = await this.USERS.checkVendor(token).catch(() => false);
+        const RETURN_ONLY_SHOWABLE = false; // _ !IS_VENDOR;
+
+        const PRODUCT_DB: any = await this.DATABASE.get(id, RETURN_ONLY_SHOWABLE);
         if (PRODUCT_DB == null) {
             console.log("Product " + id + " not found");
             throw new Error("A product with this id doesn't exist");
@@ -59,7 +64,7 @@ export class Model {
         return PRODUCT;
     }
 
-    public async changeStock(id: string, quantity: number, token: string): Promise<boolean> {
+    public async changeStock (id: string, quantity: number, token: string): Promise<boolean> {
         //check if the user is vendor
         const IS_AUTH = await this.USERS.checkUser(token);
         if (!IS_AUTH) {
@@ -85,7 +90,7 @@ export class Model {
          * @param data product data
          * @returns the result of the insertion
          */
-    public async addProduct(data: { [key: string]: any }, token: string):
+    public async addProduct (data: { [key: string]: any }, token: string):
         Promise<boolean> {
         //check if the user is vendor
         const IS_VENDOR = await this.USERS.checkVendor(token);
@@ -108,7 +113,7 @@ export class Model {
             //DATA.image become an URL
             data.primaryPhoto = await this.PHOTOS.uploadImage(data.primaryPhoto);
             if (data.secondaryPhotos) {
-                for (let i = 0; i < data.secondaryPhotos.length; i++) {
+                for (let i = 0; i < data.secondaryPhotos?.length; i++) {
                     data.secondaryPhotos[i] =
                         await this.PHOTOS.uploadImage(data.secondaryPhotos[i]);
                 }
@@ -126,7 +131,7 @@ export class Model {
          * @param DATA data to be updated
          * @returns the result of the query
         */
-    public async updateProduct(PRODUCT_ID: string, DATA: { [key: string]: any }, token: string):
+    public async updateProduct (PRODUCT_ID: string, DATA: { [key: string]: any }, token: string):
         Promise<boolean> {
         //check if the user is vendor
         const IS_VENDOR = await this.USERS.checkVendor(token);
@@ -142,36 +147,43 @@ export class Model {
         if (!VALID) {
             throw new Error("Product does not match the schema of required attributes");
         }
+        console.log("updateProduct valid data received: ", DATA);
+        
         try {
             const OLD_PRODUCT= await this.DATABASE.get(PRODUCT_ID);
             // image replacing, if needed: we need to retrieve the product from the db,
             // delete the current image from s3 and update with the new image
+            console.log("typeof DATA.primaryPhoto", typeof DATA.primaryPhoto, DATA.primaryPhoto);
             if (DATA.primaryPhoto) {
+                console.log("deleting primaryPhoto from S3");
+                
                 this.PHOTOS.deleteImage(OLD_PRODUCT.primaryPhoto);
                 DATA.primaryPhoto = await this.PHOTOS.uploadImage(DATA.primaryPhoto);
             }
 
-            if (DATA.secondaryPhotos) {
-            //delete all old photos
-                for(let i = 0; i<OLD_PRODUCT.secondaryPhotos.length; i++) {
+            console.log("typeof DATA.secondaryPhotos", typeof DATA.secondaryPhotos, DATA.secondaryPhotos);
+            if (DATA.secondaryPhotos && DATA.secondaryPhotos != []) {
+                console.log("deleting secondaryPhotos from S3");
+                //delete all old photos
+                for(let i = 0; i<OLD_PRODUCT.secondaryPhotos?.length; i++) {
                     await this.PHOTOS.deleteImage(OLD_PRODUCT.secondaryPhotos[i]);
                 }
-                for(let i = 0; i<DATA.secondaryPhotos.length; i++) {
+                for(let i = 0; i<DATA.secondaryPhotos?.length; i++) {
                     DATA.secondaryPhotos[i]=await this.PHOTOS.uploadImage(DATA.secondaryPhotos[i]);
                 }
             }
-
-            const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
-            return PRODUCT;
         }
         catch(err) {
-            console.log(err.message);
-            throw new Error(err.message);
+            console.log("Error updating images ", err.message, err);
+            throw new Error("Error updating images" + err.message);
         }
+
+        const PRODUCT = await this.DATABASE.update(PRODUCT_ID, DATA);
+        return PRODUCT;
     }
 
-    public async deleteProduct(PRODUCT_ID: string, token: string):
-        Promise<boolean> {
+    public async deleteProduct (PRODUCT_ID: string, token: string):
+    Promise<boolean> {
         //check if the user is vendor
         const IS_VENDOR = await this.USERS.checkVendor(token);
         if (!IS_VENDOR) {
@@ -185,11 +197,13 @@ export class Model {
         // images deletion
         try{
             const PRODUCT= await this.DATABASE.get(PRODUCT_ID);
-            if(PRODUCT.primaryPhoto)
-                await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
-            if (PRODUCT.secondaryPhotos) {
-                for(let i = 0; i<PRODUCT.secondaryPhotos.length; i++) {
-                    await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
+            if(PRODUCT){
+                if(PRODUCT.primaryPhoto)
+                    await this.PHOTOS.deleteImage(PRODUCT.primaryPhoto);
+                if (PRODUCT.secondaryPhotos) {
+                    for(let i = 0; i<PRODUCT.secondaryPhotos?.length; i++) {
+                        await this.PHOTOS.deleteImage(PRODUCT.secondaryPhotos[i]);
+                    }
                 }
             }
         }
@@ -202,7 +216,8 @@ export class Model {
         return await this.DATABASE.delete(PRODUCT_ID);
     }
 
-    public async getProducts(category: string, minPrice: number, maxPrice: number, sorting: string): Promise<any> {
+    public async getProducts (category: string, minPrice: number, maxPrice: number, sorting: string, token?: string): 
+    Promise<any> {
         let sortingAsc = null;
         if (sorting) {
             if (sorting == "asc")
@@ -211,7 +226,11 @@ export class Model {
                 sortingAsc = false;
         }
 
-        const PRODUCTS_DB = await this.DATABASE.getProductsByCategory(category, minPrice, maxPrice, sortingAsc);
+        const IS_VENDOR = await this.USERS.checkVendor(token).catch(() => false);
+        const RETURN_ONLY_SHOWABLE = !IS_VENDOR;
+
+        const PRODUCTS_DB = await this.DATABASE.getProductsByCategory(category, RETURN_ONLY_SHOWABLE, minPrice, 
+            maxPrice, sortingAsc);
         if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
@@ -224,8 +243,10 @@ export class Model {
         return PRODUCTS;
     }
 
-    public async getHomeProducts(): Promise<any> {
-        const PRODUCTS_DB = await this.DATABASE.getProductsHome();
+    public async getHomeProducts (token?: string): Promise<any> {
+        const IS_VENDOR = await this.USERS.checkVendor(token).catch(() => false);
+        const RETURN_ONLY_SHOWABLE = !IS_VENDOR;
+        const PRODUCTS_DB = await this.DATABASE.getProductsHome(RETURN_ONLY_SHOWABLE);
         if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
         const PRODUCTS = [];
@@ -238,11 +259,14 @@ export class Model {
         return PRODUCTS;
     }
 
-    public async getProductsByName(name: string): Promise<any> {
+    public async getProductsByName (name: string, token?: string): Promise<any> {
         if (!name) {
             throw new Error("search string can not be empty");
         }
-        const PRODUCTS_DB = await this.DATABASE.getProductsByName(name);
+        const IS_VENDOR = await this.USERS.checkVendor(token).catch(() => false);
+        const RETURN_ONLY_SHOWABLE = !IS_VENDOR;
+
+        const PRODUCTS_DB = await this.DATABASE.getProductsByName(name, RETURN_ONLY_SHOWABLE);
 
         if (!PRODUCTS_DB)
             throw new Error("error while retrieving products from db")
@@ -257,7 +281,7 @@ export class Model {
     }
 
     //PRIVATE METHODS
-    private async createProduct(product: any): Promise<Product> {
+    private async createProduct (product: any): Promise<Product> {
         //tax
         const TAX = await this.TAXES.getTax(product.tax);
         const TAX_VALUE = TAX?.value;

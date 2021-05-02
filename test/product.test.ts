@@ -1,7 +1,7 @@
 import PRODUCTWITHIMAGE from "test/productwithimage"
 import { matchersWithOptions } from 'jest-json-schema';
 import { JSONSchema7 } from "json-schema";
-import { SCHEMAS, setFormats } from '../src/utils/configAjv';
+import { SCHEMAS, setFormats } from 'src/utils/configAjv';
 import { Model } from 'src/core/model';
 
 expect.extend(matchersWithOptions(SCHEMAS, (ajv) => setFormats(ajv)));

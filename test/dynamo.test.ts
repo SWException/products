@@ -42,11 +42,11 @@ test('get home products from database', async () => {
 });
 
 test('get products from database', async () => {
-    const RES = (await DYNAMO.getProductsByCategory("-1", 2, 10));
+    const RES = (await DYNAMO.getProductsByCategory("-1", true, 2, 10));
     expect(RES).toMatchSchema(PRODUCTS_SCHEMA);
-    const RES_1 = (await DYNAMO.getProductsByCategory("-1", NaN, 10, true));
+    const RES_1 = (await DYNAMO.getProductsByCategory("-1", true, NaN, 10, true));
     expect(RES_1).toMatchSchema(PRODUCTS_SCHEMA);
-    const RES_2 = (await DYNAMO.getProductsByCategory("-1", 2, NaN, false));
+    const RES_2 = (await DYNAMO.getProductsByCategory("-1", true, 2, NaN, false));
     expect(RES_2).toMatchSchema(PRODUCTS_SCHEMA);
 });
 

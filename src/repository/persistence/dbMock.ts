@@ -19,7 +19,7 @@ export class DbMock implements Persistence {
         "tax": "-2"
     };
     
-    public async getProductsByName(name: string): Promise<any> {
+    public async getProductsByName (name: string, _onlyShowable?: boolean): Promise<any> {
         if (name) {
             return [this.PRODUCT_1, this.PRODUCT_2];
         }
@@ -27,12 +27,12 @@ export class DbMock implements Persistence {
         return [];
     }
 
-    public async getProductsByCategory (category: string, _sortValueMin?: number, _sortValueMax?: number, _sortingAsc?: boolean):
-    Promise<any>{
+    public async getProductsByCategory (category: string, _onlyShowable?: boolean, _sortValueMin?: number, 
+        _sortValueMax?: number, _sortingAsc?: boolean): Promise<any>{
         return category? [this.PRODUCT_1, this.PRODUCT_2] : false;
     }
 
-    public async getProductsHome (): Promise<any> {
+    public async getProductsHome (_onlyShowable?: boolean): Promise<any> {
         return [this.PRODUCT_1, this.PRODUCT_2];
     }
     
@@ -49,7 +49,7 @@ export class DbMock implements Persistence {
         return id? true : false;
     }
 
-    public async get (id: string): Promise<any>{
+    public async get (id: string, _onlyShowable?: boolean): Promise<any>{
         return (id)?{
             "id": id,
             "name": "mock product",
