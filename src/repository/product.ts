@@ -24,7 +24,7 @@ export class Product {
         this.netPrice = product.netPrice;
         this.taxId = product?.taxId;
         this.tax = product.tax;
-        this.price = this.calculatePrice();
+        this.price = this.calculatePrice().toFixed(2);
         this.stock = product.stock;
         this.show = (typeof product.show === "boolean") ? product.show : true;
         this.showHome = (typeof product.showHome === "boolean") ? product.showHome : false;
@@ -45,6 +45,7 @@ export class Product {
 
     // METODI PRIVATI
     private calculatePrice () {
-        return this.netPrice * (this.tax / 100 + 1);
+        const PRICE = this.netPrice * (this.tax / 100 + 1); //calculate
+        return Math.round(PRICE*100)/100; //round
     }
 }
