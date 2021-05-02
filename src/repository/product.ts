@@ -24,7 +24,7 @@ export class Product {
         this.netPrice = product.netPrice;
         this.taxId = product?.taxId;
         this.tax = product.tax;
-        this.price = this.calculatePrice().toFixed(2);
+        this.price = this.calculatePrice();
         this.stock = product.stock;
         this.show = (typeof product.show === "boolean") ? product.show : true;
         this.showHome = (typeof product.showHome === "boolean") ? product.showHome : false;
