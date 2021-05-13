@@ -16,7 +16,7 @@
         "brace-style": ["error", "stroustrup", {"allowSingleLine": true }], //brace style follows stroustrup conventions
         "space-before-function-paren": ["error", "always"], //space between function name and parenthesis
         "complexity": ["error", 10], //cyclomatic complexity
-        "max-len": ["error", { "code": 100 }], //max line length
+        "max-len": ["error", { "code": 120 }], //max line length
 
          //naming conventions
         "@typescript-eslint/naming-convention": [

@@ -9,7 +9,7 @@ export const API_RESPONSES = {
         message?: string) => response(400, status, data, message)
 }
 
-// c'è export perché attualmente ci sono dei test che testano direttamente questa funzione in apiResponses.test.ts. Per togliere l'export bisogna rivedere i test
+// c'è export perché attualmente ci sono dei test che testano direttamente questa funzione in apiResponses.test.ts.
 export function response (statusCode: number, 
     status: string,
     data: { [key: string]: any },
@@ -25,6 +25,12 @@ export function response (statusCode: number,
     }
     return {
         statusCode,
+        headers: {
+            'Access-Control-Allow-Origin': '*', 
+            'Access-Control-Allow-Credentials': true,
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE, PATCH',
+            'Access-Control-Allow-Headers': '*'
+        },
         body: JSON.stringify(BODY, null, 2)
     };
 }

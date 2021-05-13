@@ -25,12 +25,16 @@ get:
         type: string
         enum: ["asc", "desc"]
     - in: query
-      name: id-list
-      description: "Array degli id dei prodotti che si vogliono ritornare"
+      name: search
       schema:
-        type: array
-        items:
-          type: string
+        type: string
+    # - in: query
+    #   name: id-list
+    #   description: "Array degli id dei prodotti che si vogliono ritornare"
+    #   schema:
+    #     type: array
+    #     items:
+    #       type: string
   responses:
     200:
       description: "product list"
@@ -47,13 +51,14 @@ get:
                     id: "123VF",
                     name: "gioco",
                     description: "descrizione del prodotto",
-                    primaryPhoto: /image.jpg,
+                    primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                     secondaryPhotos:
                       [
-                        "/image.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                       ],
                     category: "games",
-                    price: 5.99,
+                    netPrice: 10,
+                    price: 12.20,
                     tax: 22,
                     show: true,
                     showHome: false,
@@ -63,14 +68,15 @@ get:
                     id: "321VF",
                     name: "gioco2",
                     description: "descrizione del prodotto",
-                    primaryPhoto: /image.jpg,
+                    primaryPhoto: "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                     secondaryPhotos:
                       [
-                        "/image.jpg",
-                        "/image.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
+                        "https://www.focusjunior.it/content/uploads/site_stored/imgs/0003/033/paperino_01.jpg",
                       ],
                     category: "games",
-                    price: 7.99,
+                    netPrice: 20,
+                    price: 22,
                     tax: 10,
                     show: true,
                     showHome: true,
@@ -109,9 +115,12 @@ post:
           {
             name: "scarpe",
             description: "queste sono delle bellissime scarpe",
-            price: 50.00,
-            tax: 22,
+            netPrice: 50.00,
+            tax: "1",
             stock: 5,
+            primaryPhoto: "base64,idkS0m3th1ng1nbase64==",
+            secondaryPhotos: ["base64,idkS0m3th1ng1nbase64==", 
+            "base64,idkS0m3th1ng1nbase64=="]
           }
   responses:
     200:

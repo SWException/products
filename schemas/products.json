@@ -3,62 +3,112 @@
     "product": {
         "type": "object",
         "properties": {
-            "id": { "type": "string", "minLength": 1 },
-            "name": { "type": "string", "minLength": 1, "maxLength": 50 },
-            "description": { "type": "string", "minLength": 1, "maxLength": 250 },
-            "primaryPhoto": { "type": "string", "format": "uri" },
-            "secondaryPhotos": { 
-                "type": "array", 
-                "items": { "type": "string", "format": "uri" },
+            "id": {
+                "type": "string",
+                "minLength": 1
+            },
+            "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+            },
+            "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 250
+            },
+            "primaryPhoto":{
+                "type": "string",
+                "minLength": 1
+
+            },
+            "secondaryPhotos": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
                 "uniqueItems": true,
                 "maxItems": 4
             },
-            "category": { "type": "string", "minLength": 1},
-            "price": { "type": "number", "format": "float", "minimum": 0 },
-            "netPrice": { "type": "number", "format": "float", "minimum": 0 },
-            "tax": { "type": "string" },
-            "show": { "type": "boolean" },
-            "showHome": { "type": "boolean" },
-            "stock": { "type": "integer", "format": "int64", "minimum": 0 }
+            "category": {
+                "type": "string",
+                "minLength": 1
+            },
+            "price": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0
+            },
+            "netPrice": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0
+            },
+            "tax": {
+                "type": ["string", "number"]
+            },
+            "show": {
+                "type": "boolean"
+            },
+            "showHome": {
+                "type": "boolean"
+            },
+            "stock": {
+                "type": "number",
+                "format": "int64",
+                "minimum": 0
+            }
         }
     },
     "insertProduct": {
-        "allOf" : [
-            { "$ref": "#/product" },
+        "allOf": [
             {
-                "required": ["name", "description", "netPrice", "tax"]
+                "$ref": "#/product"
+            },
+            {
+                "required": [
+                    "name",
+                    "description",
+                    "netPrice",
+                    "tax"
+                ]
             }
         ]
     },
     "editProduct": {
-        "allOf" : [
-            { "$ref": "#/product" },
-            {
-                "required": ["id"]
-            }
-        ]
+        "$ref": "#/product"
     },
-    "products": {  
+    "products": {
         "type": "array",
-        "items": { "$ref": "#/product" },
+        "items": {
+            "$ref": "#/product"
+        },
         "uniqueItems": true
     },
     "responseProduct": {
-        "allOf" : [
-            { "$ref": "response.json#/response" },
+        "allOf": [
+            {
+                "$ref": "response.json#/response"
+            },
             {
                 "properties": {
-                    "data": { "$ref": "#/product" }
+                    "data": {
+                        "$ref": "#/product"
+                    }
                 }
             }
         ]
     },
     "responseProducts": {
-        "allOf" : [
-            { "$ref": "response.json#/response" },
+        "allOf": [
+            {
+                "$ref": "response.json#/response"
+            },
             {
                 "properties": {
-                    "data": { "$ref": "#/products" }
+                    "data": {
+                        "$ref": "#/products"
+                    }
                 }
             }
         ]
